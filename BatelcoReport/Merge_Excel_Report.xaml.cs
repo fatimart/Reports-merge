@@ -1,28 +1,12 @@
 ﻿using Microsoft.Win32;
-using Spire.Xls;
-using Aspose.Cells;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.OleDb;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Workbook = Spire.Xls.Workbook;
-using Worksheet = Spire.Xls.Worksheet;
+
 using static BatelcoReport.MainWindow;
 using System.IO;
-using Syncfusion.XlsIO;
 
 using Color = System.Drawing.Color;
 using ex = Microsoft.Office.Interop.Excel;
@@ -122,10 +106,6 @@ namespace BatelcoReport
         public bool CombineWorkSheet ()
         {
             
-
-            //MessageBox.Show("the file name 1:" + bills);
-            //MessageBox.Show("the file name 2:" +kiosk);
-            //MessageBox.Show("the file name 3:" +mPos);
 
             if (listboxFiles.Items.Count != 0)
             {
@@ -608,10 +588,7 @@ namespace BatelcoReport
             {
                 this.Close();
             }
-            //if (saveFileDialog1.ShowDialog() == DialogResult.Cancel)
-            //{
-            //    //user cancelled out
-            //}
+          
 
         }
         public class strs

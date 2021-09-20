@@ -13,7 +13,7 @@
                 <Border BorderBrush="Black" BorderThickness="0,0,0,5" Height="60" HorizontalAlignment="Center" VerticalAlignment="Center" Width="890">
                     <WrapPanel HorizontalAlignment="Left" VerticalAlignment="Center">
                         <TextBox Height="30" Name="txtFilePath" Width="550" Margin="10,0,10,0" FontSize="15" Opacity="1" />
-                        <Button Content="Import Excel " Name="btnOpen" Width="120" FontSize="15" Height="30" FontWeight="Bold" Click="btnOpen_Click" />
+                        <Button Content="Import Excel " Name="btnOpen" Width="120" FontSize="15" Height="30" FontWeight="Bold"/>
 
                     </WrapPanel>
 

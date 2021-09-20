@@ -1,5 +1,5 @@
-﻿using Microsoft.Win32;
-using Spire.Xls;
+﻿/**
+using Microsoft.Win32;
 using Aspose.Cells;
 using System;
 using System.Collections.Generic;
@@ -18,8 +18,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Workbook = Spire.Xls.Workbook;
-using Worksheet = Spire.Xls.Worksheet;
 using static BatelcoReport.MainWindow;
 using System.IO;
 using Syncfusion.XlsIO;
@@ -43,40 +41,7 @@ namespace BatelcoReport
         {
             InitializeComponent();
         }
-        public void merge()
-        {
-            string excel1 = XlFiles[0].FullPath;
-            string excel2 = XlFiles[1].FullPath;
-            string excel3 = XlFiles[2].FullPath;
-            XlFile xlfile = new XlFile();
-            Workbook workbook = new Workbook();
-            //load the first workbook
-            if (excel1.Length > 0)
-                workbook.LoadFromFile(excel1);
-            //load the second workbook
-            Workbook workbook2 = new Workbook();
-            if (excel2.Length > 0)
-                workbook2.LoadFromFile(excel2);
-            //load the second workbook
-            Workbook workbook3 = new Workbook();
-            if (excel3.Length > 0)
-                workbook3.LoadFromFile(excel3);
-            //for (int i =0; i<XlFiles.Count;i++)
-            //{
-            //    MessageBox.Show(XlFiles[i].FullPath);
-            //    workbook.LoadFromFile(XlFiles[i].FullPath);
-
-            //}
-            //import the second workbook's worksheet into the first workbook using a datatable
-            Worksheet sheet2 = workbook2.Worksheets[0];
-            DataTable dataTable = sheet2.ExportDataTable();
-            Worksheet sheet1 = workbook.Worksheets[0];
-            sheet1.InsertDataTable(dataTable, false, sheet1.LastRow + 1, 1);
-
-
-            //save the workbook
-            workbook.SaveToFile("result.xlsx");
-        }
+        
         public void FillDataGrid()
         {
             OpenFileDialog fdlg = new OpenFileDialog();
@@ -739,3 +704,4 @@ namespace BatelcoReport
 
 
 
+**/

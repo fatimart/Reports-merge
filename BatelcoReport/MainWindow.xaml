@@ -19,7 +19,7 @@
 
                 </Border>
 
-                <DataGrid AutoGenerateColumns="True" IsReadOnly="True" HorizontalAlignment="Center" Name="dtGrid"  Height="330" Width="888" />
+                <DataGrid AutoGenerateColumns="True" IsReadOnly="True" HorizontalAlignment="Center" Name="dtGrid"  Height="330" Width="710" />
 
 
             </StackPanel>

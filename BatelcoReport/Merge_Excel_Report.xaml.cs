@@ -31,277 +31,181 @@ using System.Drawing;
 namespace BatelcoReport
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for Merge_Excel_Report.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class Merge_Excel_Report : Window
     {
         public ObservableCollection<XlFile> XlFiles { get; } = new ObservableCollection<XlFile>();
         public ObservableCollection<Report> reports { get; } = new ObservableCollection<Report>();
         public ObservableCollection<SIMReport> BillsReports { get; } = new ObservableCollection<SIMReport>();
         public ObservableCollection<strs> str { get; } = new ObservableCollection<strs>();
-        public MainWindow()
+
+
+        public Merge_Excel_Report ()
         {
             InitializeComponent();
         }
-        public void merge()
+
+        private void btnSelectFile_Click ( object sender, RoutedEventArgs e )
         {
-            string excel1 = XlFiles[0].FullPath;
-            string excel2 = XlFiles[1].FullPath;
-            string excel3 = XlFiles[2].FullPath;
-            XlFile xlfile = new XlFile();
-            Workbook workbook = new Workbook();
-            //load the first workbook
-            if (excel1.Length > 0)
-                workbook.LoadFromFile(excel1);
-            //load the second workbook
-            Workbook workbook2 = new Workbook();
-            if (excel2.Length > 0)
-                workbook2.LoadFromFile(excel2);
-            //load the second workbook
-            Workbook workbook3 = new Workbook();
-            if (excel3.Length > 0)
-                workbook3.LoadFromFile(excel3);
-            //for (int i =0; i<XlFiles.Count;i++)
-            //{
-            //    MessageBox.Show(XlFiles[i].FullPath);
-            //    workbook.LoadFromFile(XlFiles[i].FullPath);
 
-            //}
-            //import the second workbook's worksheet into the first workbook using a datatable
-            Worksheet sheet2 = workbook2.Worksheets[0];
-            DataTable dataTable = sheet2.ExportDataTable();
-            Worksheet sheet1 = workbook.Worksheets[0];
-            sheet1.InsertDataTable(dataTable, false, sheet1.LastRow + 1, 1);
-
-
-            //save the workbook
-            workbook.SaveToFile("result.xlsx");
-        }
-        public void FillDataGrid()
-        {
-            OpenFileDialog fdlg = new OpenFileDialog();
-            fdlg.Title = "select File";
-            fdlg.FileName = txtFilePath.Text;
-            fdlg.DefaultExt = ".xlsx";
-            fdlg.Filter = "(.xlsx)|*.xlsx;*.CSV;*.csv";
-            fdlg.FilterIndex = 1;
-            fdlg.RestoreDirectory = true;
-            fdlg.Multiselect = true;
-            if (fdlg.ShowDialog() == true)
-            {
-                string commandText;
-                string oledbConnectString;
-                //txtFilePath.Text = fdlg.FileName;
-                foreach (string filename in fdlg.FileNames)
-                {
-                    commandText = "SELECT * FROM [Sheet1$]";
-                    oledbConnectString = "Provider=Microsoft.ACE.OLEDB.12.0;" +
-                   @"Data Source=" + filename + ";" +
-                   "Extended Properties=\"Excel 12.0;HDR=YES\";";
-                    OleDbConnection connection = new OleDbConnection(oledbConnectString);
-                    OleDbCommand command = new OleDbCommand(commandText, connection);
-                    try
-                    {
-                        connection.Open();
-                        DataTable dt = new DataTable();
-                        OleDbDataAdapter Adpt = new OleDbDataAdapter(commandText, connection);
-                        Adpt.Fill(dt);
-                        dtGrid.ItemsSource = dt.DefaultView;
-                    }
-                    catch (Exception)
-                    {
-                    }
-                    XlFiles.Add(new XlFile
-                    {
-                        Name = System.IO.Path.GetFileName(filename),
-                        FullPath = filename
-                    });
-                }
-            }
-
-         
-
-        }
-
-        public void OpenMultipleFile()
-        {
-            OpenFileDialog fdlg = new OpenFileDialog();
-            fdlg.Multiselect = true;
-            fdlg.Filter =
-                        "(.xlsx)|*.xlsx;*.CSV;*.csv";
-            fdlg.InitialDirectory =
-                        Environment.GetFolderPath(
-                            Environment.SpecialFolder.MyDocuments);
-
-            if (fdlg.ShowDialog() == true)
-            {
-
-                foreach (string filename in fdlg.FileNames)
-
-                    XlFiles.Add(new XlFile
-                    {
-                        Name = System.IO.Path.GetFileName(filename),
-                        FullPath = filename
-                    });
-            }
-        }
-        private void btnOpen_Click(object sender, RoutedEventArgs e)
-        {
             OpenMultipleFile();
 
+
         }
 
-        private void btnimport_Click(object sender, RoutedEventArgs e)
+        private void btnExport_Click ( object sender, RoutedEventArgs e )
         {
-            if(CombineWorkSheet())
+            if (CombineWorkSheet())
             {
                 ReadAll();
                 Excel();
             }
-            else
+            
+        }
+
+        private void DeleteButton_Click ( object sender, RoutedEventArgs e )
+
+        {
+            try
             {
-                MessageBox.Show("Please select valid files");
+
+      
+            if (listboxFiles.Items.Count > 0)
+            {
+                listboxFiles.Items.RemoveAt
+
+                    (listboxFiles.Items.IndexOf(listboxFiles.SelectedItem));
+            }
+            }
+            catch 
+            {
+
+             
+            }
+        }
+        public void OpenMultipleFile ()
+        {
+            OpenFileDialog fdlg = new OpenFileDialog();
+            fdlg.Multiselect = true;
+            fdlg.Filter = "(.xlsx)|*.xlsx;*.CSV;*.csv";
+            fdlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            if (fdlg.ShowDialog() == true)
+            {
+
+                foreach (string filename in fdlg.FileNames)
+                {
+                    if (System.IO.Path.GetFileName(filename) == "bills.csv" || System.IO.Path.GetFileName(filename) == "kiosk.xlsx" || System.IO.Path.GetFileName(filename) == "mpos.CSV" && listboxFiles.Items.Count <= 3)
+                    {
+                        XlFiles.Add(new XlFile
+                        {
+                            Name = System.IO.Path.GetFileName(filename),
+                            FullPath = filename
+                        });
+
+
+                        listboxFiles.Items.Add(System.IO.Path.GetFullPath(filename));
+                       
+                    }
+                    else
+                    {
+                            MessageBox.Show("You Are Allowed to select 3 files only");
+                        
+                    }
+                }
 
             }
-
-
 
         }
 
-
-        public bool CombineWorkSheet()
+        public bool CombineWorkSheet ()
         {
-            string  bills, kiosk, mPos ;
-            string billsName, kioskName, mPosName;
-
-            {
-                if (XlFiles[0].Name == "bills.csv") { bills = XlFiles[0].FullPath; billsName = XlFiles[0].Name; }
-                else if (XlFiles[1].Name == "bills.csv") { bills = XlFiles[1].FullPath; billsName = XlFiles[1].Name; }
-                else if (XlFiles[2].Name == "bills.csv") { bills = XlFiles[2].FullPath; billsName = XlFiles[2].Name; }
-                else { bills = ""; billsName = ""; }
-            }
-            {
-                if (XlFiles[0].Name == "kiosk.xlsx") { kiosk = XlFiles[0].FullPath; kioskName = XlFiles[0].Name; }
-                else if (XlFiles[1].Name == "kiosk.xlsx") { kiosk = XlFiles[1].FullPath; kioskName = XlFiles[1].Name; }
-                else if (XlFiles[2].Name == "kiosk.xlsx") { kiosk = XlFiles[2].FullPath; kioskName = XlFiles[2].Name; }
-                else { kiosk = ""; kioskName = ""; }
-            }
-            {
-                if (XlFiles[0].Name == "mpos.CSV") { mPos = XlFiles[0].FullPath; mPosName = XlFiles[0].Name; }
-                else if (XlFiles[1].Name == "mpos.CSV") { mPos = XlFiles[1].FullPath; mPosName = XlFiles[1].Name; }
-                else if (XlFiles[2].Name == "mpos.CSV") { mPos = XlFiles[2].FullPath; mPosName = XlFiles[2].Name; }
-                else { mPos = ""; mPosName = ""; }
-            }
+            
 
             //MessageBox.Show("the file name 1:" + bills);
             //MessageBox.Show("the file name 2:" +kiosk);
             //MessageBox.Show("the file name 3:" +mPos);
 
-            if (billsName == "bills.csv" && kioskName == "kiosk.xlsx" && mPosName == "mpos.CSV") 
+            if (listboxFiles.Items.Count != 0)
             {
+                string bills, kiosk, mPos;
+                string billsName, kioskName, mPosName;
 
-                // Open Excel A file.
-                Aspose.Cells.Workbook SourceBook1 = new Aspose.Cells.Workbook(bills);
+                {
+                    if (XlFiles[0].Name == "bills.csv") { bills = XlFiles[0].FullPath; billsName = XlFiles[0].Name; }
+                    else if (XlFiles[1].Name == "bills.csv") { bills = XlFiles[1].FullPath; billsName = XlFiles[1].Name; }
+                    else if (XlFiles[2].Name == "bills.csv") { bills = XlFiles[2].FullPath; billsName = XlFiles[2].Name; }
+                    else { bills = ""; billsName = ""; }
+                }
+                {
+                    if (XlFiles[0].Name == "kiosk.xlsx") { kiosk = XlFiles[0].FullPath; kioskName = XlFiles[0].Name; }
+                    else if (XlFiles[1].Name == "kiosk.xlsx") { kiosk = XlFiles[1].FullPath; kioskName = XlFiles[1].Name; }
+                    else if (XlFiles[2].Name == "kiosk.xlsx") { kiosk = XlFiles[2].FullPath; kioskName = XlFiles[2].Name; }
+                    else { kiosk = ""; kioskName = ""; }
+                }
+                {
+                    if (XlFiles[0].Name == "mpos.CSV") { mPos = XlFiles[0].FullPath; mPosName = XlFiles[0].Name; }
+                    else if (XlFiles[1].Name == "mpos.CSV") { mPos = XlFiles[1].FullPath; mPosName = XlFiles[1].Name; }
+                    else if (XlFiles[2].Name == "mpos.CSV") { mPos = XlFiles[2].FullPath; mPosName = XlFiles[2].Name; }
+                    else { mPos = ""; mPosName = ""; }
+                }
 
-                // Open Excel B file.
-                Aspose.Cells.Workbook SourceBook2 = new Aspose.Cells.Workbook(kiosk);
+                if (billsName == "bills.csv" && kioskName == "kiosk.xlsx" && mPosName == "mpos.CSV")
+                {
 
-                // Open the third excel file.
-                Aspose.Cells.Workbook SourceBook3 = new Aspose.Cells.Workbook(mPos);
+                    // Open Excel A file.
+                    Aspose.Cells.Workbook SourceBook1 = new Aspose.Cells.Workbook(bills);
 
-                // Create destination Workbook.
-                Aspose.Cells.Workbook destWorkbook = new Aspose.Cells.Workbook();
-                // First worksheet is added by default to the Workbook. Add the second worksheet.
-                destWorkbook.Worksheets.Add();
-                destWorkbook.Worksheets.Add();
-                // 
-                destWorkbook.Worksheets[0].Copy(SourceBook1.Worksheets[0]);
+                    // Open Excel B file.
+                    Aspose.Cells.Workbook SourceBook2 = new Aspose.Cells.Workbook(kiosk);
 
-                //
-                destWorkbook.Worksheets[1].Copy(SourceBook2.Worksheets[0]);
-                //
-                destWorkbook.Worksheets[2].Copy(SourceBook3.Worksheets[0]);
+                    // Open the third excel file.
+                    Aspose.Cells.Workbook SourceBook3 = new Aspose.Cells.Workbook(mPos);
 
-                // By default, the worksheet names are "Sheet1" and "Sheet2" respectively.
-                // Lets give them meaningful names.
-                destWorkbook.Worksheets[0].Name = "Sheet1";
-                destWorkbook.Worksheets[1].Name = "Sheet2";
-                destWorkbook.Worksheets[2].Name = "Sheet3";
+                    // Create destination Workbook.
+                    Aspose.Cells.Workbook destWorkbook = new Aspose.Cells.Workbook();
+                    // First worksheet is added by default to the Workbook. Add the second worksheet.
+                    destWorkbook.Worksheets.Add();
+                    destWorkbook.Worksheets.Add();
+                    // 
+                    destWorkbook.Worksheets[0].Copy(SourceBook1.Worksheets[0]);
 
-                // Save the destination file.
-                destWorkbook.Save("CombinedFile1.xlsx");
+                    //
+                    destWorkbook.Worksheets[1].Copy(SourceBook2.Worksheets[0]);
+                    //
+                    destWorkbook.Worksheets[2].Copy(SourceBook3.Worksheets[0]);
 
-                return true;
+                    // By default, the worksheet names are "Sheet1" and "Sheet2" respectively.
+                    // Lets give them meaningful names.
+                    destWorkbook.Worksheets[0].Name = "Sheet1";
+                    destWorkbook.Worksheets[1].Name = "Sheet2";
+                    destWorkbook.Worksheets[2].Name = "Sheet3";
+
+                    // Save the destination file.
+                    destWorkbook.Save("CombinedFile1.xlsx");
+
+                    return true;
+                }
+
+                else
+                {
+                    MessageBox.Show("Please select 3 files with names bills, kiosk and mpos");
+                    XlFiles.Clear();
+                    return false;
+                }
+
             }
-
             else
             {
                 MessageBox.Show("Please select 3 files with names bills, kiosk and mpos");
                 XlFiles.Clear();
                 return false;
             }
-
         }
-        //public void combineMultiWorkSheet()
-        //{
-        //    // Open an Excel file that contains the worksheets:
-        //    // Products1, Products2 and Products3
-        //    Aspose.Cells.Workbook workbook = new Aspose.Cells.Workbook("CombinedFile1.xlsx");
-
-        //    // Add a worksheet named Summary_sheet
-        //    Aspose.Cells.Worksheet summarySheet = workbook.Worksheets.Add("Summary_sheet");
-
-        //    // Iterate over source worksheets whose data you want to copy to the
-        //    // summary worksheet
-        //    string[] nameOfSourceWorksheets = { "Sheet1", "Sheet2", "Sheet3" };
-        //    int totalRowCount = 0;
-
-        //    foreach (string sheetName in nameOfSourceWorksheets)
-        //    {
-        //        Aspose.Cells.Worksheet sourceSheet = workbook.Worksheets[sheetName];
-
-        //        Range sourceRange;
-        //        Range destRange;
-        //        // In case of Sheet1 worksheet, include all rows and cols.
-        //        if (sheetName.Equals("Sheet1"))
-        //        {
-        //            sourceRange = sourceSheet.Cells.MaxDisplayRange;
-
-        //            destRange = summarySheet.Cells.CreateRange(
-        //                    sourceRange.FirstRow + totalRowCount,
-        //                    sourceRange.FirstColumn,
-        //                    sourceRange.RowCount,
-        //                    sourceRange.ColumnCount);
-        //        }
-        //        // In case of Products2 and Products3 worksheets,
-        //        // exclude the first row (which contains headings).
-        //        else
-        //        {
-        //            int mdatarow = sourceSheet.Cells.MaxDataRow; // Zero-based
-        //            int mdatacol = sourceSheet.Cells.MaxDataColumn; // Zero-based
-        //            sourceRange = sourceSheet.Cells.CreateRange(0 + 1, 0, mdatarow, mdatacol + 1);
-
-        //            destRange = summarySheet.Cells.CreateRange(
-        //                    sourceRange.FirstRow + totalRowCount - 1,
-        //                    sourceRange.FirstColumn,
-        //                    sourceRange.RowCount,
-        //                    sourceRange.ColumnCount);
-        //        }
-
-        //        // Copies data, formatting, drawing objects etc. from a
-        //        // source range to destination range.
-        //        destRange.Copy(sourceRange);
-        //        totalRowCount = sourceRange.RowCount + totalRowCount;
-        //    }
-
-        //    // Save the workbook 
-        //    workbook.Save("Summarized.xlsx");
-
-        //}
 
         public void read1 ()
         {
-            //  Aspose.Cells.Workbook workbook = new Aspose.Cells.Workbook("CombinedFile1.xlsx");
             string CombineFile = "CombinedFile1.xlsx";
             string commandText = "SELECT * FROM [Sheet1$]";
             string oledbConnectString = "Provider=Microsoft.ACE.OLEDB.12.0;" +
@@ -309,15 +213,13 @@ namespace BatelcoReport
             "Extended Properties=\"Excel 12.0;HDR=YES\";";
             OleDbConnection connection = new OleDbConnection(oledbConnectString);
             OleDbCommand command = new OleDbCommand(commandText, connection);
-            //   DataTable dt = new DataTable();
-            // OleDbDataAdapter Adpt = new OleDbDataAdapter(commandText, connection);
+            
             OleDbDataReader reader;
             try
             {
                 connection.Open();
                 reader = command.ExecuteReader();
-                //  Adpt.Fill(dt);
-                //   dtGrid.ItemsSource = dt.DefaultView;
+               
                 while (reader.Read())
                 {
                     if (reader["Transaction Status "].ToString().Trim() == "SUCCESS")
@@ -361,11 +263,10 @@ namespace BatelcoReport
                 connection.Close();
             }
 
-
         }
-        public void read2()
+
+        public void read2 ()
         {
-            //  Aspose.Cells.Workbook workbook = new Aspose.Cells.Workbook("CombinedFile1.xlsx");
             string CombineFile = "CombinedFile1.xlsx";
             string commandText = "SELECT * FROM [Sheet2$]";
             string oledbConnectString = "Provider=Microsoft.ACE.OLEDB.12.0;" +
@@ -374,13 +275,13 @@ namespace BatelcoReport
             OleDbConnection connection = new OleDbConnection(oledbConnectString);
             OleDbCommand command = new OleDbCommand(commandText, connection);
             DataTable dt = new DataTable();
-        //    OleDbDataAdapter Adpt = new OleDbDataAdapter(commandText, connection);
             OleDbDataReader reader;
+
             try
             {
                 connection.Open();
                 reader = command.ExecuteReader();
-          //      Adpt.Fill(dt);
+                //      Adpt.Fill(dt);
                 //    dtGrid.ItemsSource = dt.DefaultView;
                 while (reader.Read())
                 {
@@ -411,9 +312,7 @@ namespace BatelcoReport
                             Transaction_Status = reader["BT Res"].ToString(),
                         });
                     }
-                    //connection.Open();
-                    //int rowsAffected = command.ExecuteNonQuery();
-                    //connection.Close();
+                    
                 }
 
 
@@ -427,7 +326,7 @@ namespace BatelcoReport
                 connection.Close();
             }
         }
-        public void read3()
+        public void read3 ()
         {
             string CombineFile = "CombinedFile1.xlsx";
             string commandText = "SELECT * FROM [Sheet3$]";
@@ -443,11 +342,11 @@ namespace BatelcoReport
             {
                 connection.Open();
                 reader = command.ExecuteReader();
-             //   Adpt.Fill(dt);
-                //  dtGrid.ItemsSource = dt.DefaultView;
+               
                 while (reader.Read())
                 {
-                    if (reader["Transaction Status"].ToString().Trim()== "Success") {
+                    if (reader["Transaction Status"].ToString().Trim() == "Success")
+                    {
                         reports.Add(new Report
                         {
                             ACCOUNT_NUMBER = Convert.ToInt32(reader["Circuit Number"]),
@@ -473,7 +372,7 @@ namespace BatelcoReport
                             Transaction_Status = reader["Transaction Status"].ToString(),
                         });
                     }
-                    
+
                 }
 
 
@@ -488,11 +387,11 @@ namespace BatelcoReport
             }
         }
 
-        public void ReadAll()
+        public void ReadAll ()
         {
-             read1();
-             read2();
-             read3();
+            read1();
+            read2();
+            read3();
         }
 
 
@@ -565,30 +464,19 @@ namespace BatelcoReport
             worksheet.get_Range("A4", "N" + c + "").HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignRight;
             worksheet.get_Range("A4", "N" + c + "").VerticalAlignment = Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignBottom;
 
+            worksheet.get_Range("A2:N2").Font.Color = Color.FromArgb(255, 0, 0);
             worksheet.get_Range("C3", "C" + c + "").Interior.Color = System.Drawing.Color.Yellow;
             worksheet.get_Range("L3", "L" + c + "").Interior.Color = System.Drawing.Color.Yellow;
 
             worksheet.get_Range("A3", "N" + c + "").Borders.LineStyle = ex.XlLineStyle.xlContinuous;
             worksheet.get_Range("A3", "N" + c + "").Borders.Weight = ex.XlBorderWeight.xlThin;
 
-            ////Text Alignment Setting (Horizontal Alignment)
-            // worksheet.get_Range("A3:N3").HorizontalAlignment = ExcelHAlign.HAlignCenter;
-
-            ////Color
-            //worksheet.get_Range("A2:N2").Font.Color = Color.FromArgb(255, 0, 0);
-            //worksheet.Cells["C3"].CellStyle.Color = Color.FromArgb(255, 255, 0);
-            //worksheet.Cells["L3"].CellStyle.Color = Color.FromArgb(255, 255, 0);
 
             Microsoft.Office.Interop.Excel.Range range = worksheet.UsedRange;
             Microsoft.Office.Interop.Excel.Range cell = range.Cells[1, 14];
             Microsoft.Office.Interop.Excel.Borders border = cell.Borders;
 
 
-
-            //border[ex.XlBordersIndex.xlEdgeLeft].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
-            //border[ex.XlBordersIndex.xlEdgeTop].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
-            //border[ex.XlBordersIndex.xlEdgeBottom].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
-            //border[ex.XlBordersIndex.xlEdgeRight].LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
 
 
             for (int i = 4, n = 0; i < reports.Count - 1; i++, n++)
@@ -598,33 +486,23 @@ namespace BatelcoReport
                 worksheet.Cells[i, 1].Value = reports[n].ACCOUNT_NUMBER;
                 worksheet.Cells[i, 2].Value = reports[n].CUSTOMER_NAME;
                 worksheet.Cells[i, 3].Value = reports[n].TRANSACTION_NUMBER;
-                //worksheet.Cells[i, 3].CellStyle.Color = Color.FromArgb(255, 255, 0);
                 worksheet.Cells[i, 4].Value = reports[n].PAYMENTDATE.ToString("dd / MM / yyyy HH: mm:ss");
-                //worksheet.Cells[i, 4].NumberFormat = "dd/mm/yyyy hh:mm:ss";
 
                 worksheet.Cells[i, 5].Value = reports[n].Date_of_payment_execution;
                 worksheet.Cells[i, 6].Value = reports[n].AMOUNT;
-                //worksheet.Cells[i, 6].Value = reports[n].AMOUNT.ToString(" 0.000");
-                //worksheet.Cells[i, 6].NumberFormat = "0.000";
 
                 worksheet.Cells[i, 7].Value = reports[n].Commission;
-                //worksheet.Cells[i, j].NumberFormat = "0.000";
 
                 worksheet.Cells[i, 8].Value = reports[n].VAT;
-                //worksheet.Cells[i, j].NumberFormat = "0.000";
 
                 worksheet.Cells[i, 9].Value = (reports[n].AMOUNT - reports[n].Commission - reports[n].VAT);
-                //worksheet.Cells[i, j].NumberFormat = "0.000";
 
                 worksheet.Cells[i, 10].Value = reports[n].AUTHRIZATION_NO;
                 worksheet.Cells[i, 11].Value = reports[n].Service_Name;
                 worksheet.Cells[i, 12].Value = reports[n].REFERENCE_NO;
-                //worksheet.Cells[i, 12].CellStyle.Color = Color.FromArgb(255, 255, 0);
 
                 worksheet.Cells[i, 13].Value = reports[n].PAYMENTLOCATION;
                 worksheet.Cells[i, 14].Value = reports[n].Transaction_Status;
-
-                //workSheet_range.Interior.Color = System.Drawing.Color.Yellow.ToArgb();
 
             }
 
@@ -718,11 +596,22 @@ namespace BatelcoReport
                                  false,
                                  Type.Missing,
                                  Type.Missing);
-            }
 
-            this.Close();
-            excelApp.Quit();
-            System.Diagnostics.Process.Start(saveFileDialog1.FileName);
+
+                this.Close();
+
+                excelApp.Quit();
+                //if(saveFileDialog1.ShowDialog() )
+                System.Diagnostics.Process.Start(saveFileDialog1.FileName);
+            }
+            else
+            {
+                this.Close();
+            }
+            //if (saveFileDialog1.ShowDialog() == DialogResult.Cancel)
+            //{
+            //    //user cancelled out
+            //}
 
         }
         public class strs
@@ -732,10 +621,5 @@ namespace BatelcoReport
 
         }
 
-     
     }
 }
-
-
-
-

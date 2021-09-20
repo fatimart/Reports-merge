@@ -582,7 +582,7 @@ namespace BatelcoReport
 
                 excelApp.Quit();
                 //if(saveFileDialog1.ShowDialog() )
-                System.Diagnostics.Process.Start(saveFileDialog1.FileName);
+                //System.Diagnostics.Process.Start(saveFileDialog1.FileName);
             }
             else
             {

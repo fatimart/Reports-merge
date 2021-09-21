@@ -505,8 +505,8 @@ namespace BatelcoReport
             worksheet.get_Range("A1", "N1").HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
             worksheet.get_Range("A1", "N1").VerticalAlignment = Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignCenter;
 
-            worksheet.get_Range("A4", "N" + c + "").HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignRight;
-            worksheet.get_Range("A4", "N" + c + "").VerticalAlignment = Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignBottom;
+            worksheet.get_Range("A2", "N" + c + "").HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignRight;
+            worksheet.get_Range("A2", "N" + c + "").VerticalAlignment = Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignBottom;
 
 
             worksheet.get_Range("C1", "C" + c + "").Interior.Color = System.Drawing.Color.Yellow;

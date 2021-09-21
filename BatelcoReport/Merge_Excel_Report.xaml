@@ -6,45 +6,41 @@
         xmlns:local="clr-namespace:BatelcoReport"
         mc:Ignorable="d"
         Title="Merge_Excel_Report" Height="322" Width="734">
-    <Grid Margin="0,0,18,12">
-
-        <ListBox x:Name="listboxFiles"
-                 SelectionMode="Multiple"
-                 HorizontalAlignment="Left" 
-                 Height="100" 
-                 Margin="80,60,0,0" 
-                 VerticalAlignment="Top" 
-                 Width="480"/>
+    <Grid Margin="0,0,7,4">
 
         <Button x:Name="btn_selectFile" Content="Browse" 
                 HorizontalAlignment="Left" 
-                Margin="580,60,0,0" 
+                Margin="580,29,0,0" 
                 VerticalAlignment="Top" 
-                Width="82" 
-                Height="26"
+                Width="75" 
+                Height="23"
                 Click="btnSelectFile_Click"/>
 
         <Button x:Name="btnexport" 
                 Content="Export" 
                 HorizontalAlignment="Left" 
-                Margin="80,179,0,0" 
+                Margin="140,164,0,0" 
                 VerticalAlignment="Top" 
-                Width="480" Height="26" 
+                Width="420" Height="26" 
                 Click="btnExport_Click"/>
 
-        <Label Content="Files:" 
+        <Label Content="Kiosk File Path:" 
                HorizontalAlignment="Left" 
-               Margin="20,60,0,0" 
-               VerticalAlignment="Top"/>
-
-
-        <Button x:Name="DeleteButton" 
-                Content="Delete File" 
-                HorizontalAlignment="Left" 
-                Margin="580,99,0,0" 
-                VerticalAlignment="Top" 
-                Width="82" 
-                Click=" DeleteButton_Click" Height="26"/>
+               Margin="24,25,0,0" 
+               VerticalAlignment="Top" Width="96"/>
+        <Label Content="TAM Bills File Path:" 
+            HorizontalAlignment="Left" 
+            Margin="24,64,0,0" 
+            VerticalAlignment="Top" Width="111"/>
+        <TextBox x:Name="kioskFiletxt" HorizontalAlignment="Left" Height="23" Margin="145,29,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="415"/>
+        <TextBox x:Name="billsFiletxt" HorizontalAlignment="Left" Height="23" Margin="145,67,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="415"/>
+        <Label Content="mPOS File Path:" 
+            HorizontalAlignment="Left" 
+            Margin="24,102,0,0" 
+            VerticalAlignment="Top" Width="96"/>
+        <TextBox x:Name="mPOSfileTxt" HorizontalAlignment="Left" Height="23" Margin="145,105,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="415"/>
+        <Button x:Name="billsBtnBrowse" Content="Browse" HorizontalAlignment="Left" Margin="580,67,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="billsBtnBrowse_Click"/>
+        <Button x:Name="mPOsBtn" Content="Browse" HorizontalAlignment="Left" Margin="580,105,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="mPOsBtn_Click"/>
 
     </Grid>
 </Window>

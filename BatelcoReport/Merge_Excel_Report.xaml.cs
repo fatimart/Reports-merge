@@ -24,7 +24,6 @@ namespace BatelcoReport
         public ObservableCollection<SIMReport> BillsReports { get; } = new ObservableCollection<SIMReport>();
         public ObservableCollection<strs> str { get; } = new ObservableCollection<strs>();
 
-
         public Merge_Excel_Report ()
         {
             InitializeComponent();
@@ -32,10 +31,18 @@ namespace BatelcoReport
 
         private void btnSelectFile_Click ( object sender, RoutedEventArgs e )
         {
+            OpenKisokFile();
 
-            OpenMultipleFile();
+        }
 
+        private void billsBtnBrowse_Click ( object sender, RoutedEventArgs e )
+        {
+            OpenBillFile();
+        }
 
+        private void mPOsBtn_Click ( object sender, RoutedEventArgs e )
+        {
+            OpenmPOSFile();
         }
 
         private void btnExport_Click ( object sender, RoutedEventArgs e )
@@ -48,144 +55,141 @@ namespace BatelcoReport
             
         }
 
-        private void DeleteButton_Click ( object sender, RoutedEventArgs e )
 
-        {
-            try
-            {
 
-      
-            if (listboxFiles.Items.Count > 0)
-            {
-                listboxFiles.Items.RemoveAt
-
-                    (listboxFiles.Items.IndexOf(listboxFiles.SelectedItem));
-            }
-            }
-            catch 
-            {
-
-             
-            }
-        }
-        public void OpenMultipleFile ()
+        public void OpenBillFile ()
         {
             OpenFileDialog fdlg = new OpenFileDialog();
-            fdlg.Multiselect = true;
             fdlg.Filter = "(.xlsx)|*.xlsx;*.CSV;*.csv";
             fdlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
             if (fdlg.ShowDialog() == true)
             {
 
-                foreach (string filename in fdlg.FileNames)
+                if (System.IO.Path.GetFileName(fdlg.FileName) == "bills.csv")
                 {
-                    if (System.IO.Path.GetFileName(filename) == "bills.csv" || System.IO.Path.GetFileName(filename) == "kiosk.xlsx" || System.IO.Path.GetFileName(filename) == "mpos.CSV" && listboxFiles.Items.Count <= 3)
-                    {
-                        XlFiles.Add(new XlFile
-                        {
-                            Name = System.IO.Path.GetFileName(filename),
-                            FullPath = filename
-                        });
 
+                    billsFiletxt.Text = fdlg.FileName;
 
-                        listboxFiles.Items.Add(System.IO.Path.GetFullPath(filename));
-                       
-                    }
-                    else
-                    {
-                            MessageBox.Show("You Are Allowed to select 3 files only");
-                        
-                    }
                 }
+                else
+                {
+                    MessageBox.Show("You Are Allowed to add bills.csv file only");
 
+                }
             }
-
         }
+
+
+        public void OpenKisokFile ()
+        {
+            OpenFileDialog fdlg = new OpenFileDialog();
+            fdlg.Filter = "(.xlsx)|*.xlsx;*.CSV;*.csv";
+            fdlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            if (fdlg.ShowDialog() == true)
+            {
+
+                if (System.IO.Path.GetFileName(fdlg.FileName) == "kiosk.xlsx")
+                {
+
+                    kioskFiletxt.Text = fdlg.FileName;
+
+                }
+                else
+                {
+                    MessageBox.Show("You Are Allowed to add kiosk.xlsx file only");
+
+                }
+            }
+        }
+
+
+        public void OpenmPOSFile ()
+        {
+            OpenFileDialog fdlg = new OpenFileDialog();
+            fdlg.Filter = "(.xlsx)|*.xlsx;*.CSV;*.csv";
+            fdlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            if (fdlg.ShowDialog() == true)
+            {
+
+                if (System.IO.Path.GetFileName(fdlg.FileName) == "mpos.CSV")
+                {
+
+                    mPOSfileTxt.Text = fdlg.FileName;
+
+                }
+                else
+                {
+                    MessageBox.Show("You Are Allowed to add mpos.CSV file only");
+
+                }
+            }
+        }
+
+
+
+
 
         public bool CombineWorkSheet ()
         {
             
 
-            if (listboxFiles.Items.Count != 0)
-            {
-                string bills, kiosk, mPos;
-                string billsName, kioskName, mPosName;
+            string bills, kiosk, mPos;
 
-                {
-                    if (XlFiles[0].Name == "bills.csv") { bills = XlFiles[0].FullPath; billsName = XlFiles[0].Name; }
-                    else if (XlFiles[1].Name == "bills.csv") { bills = XlFiles[1].FullPath; billsName = XlFiles[1].Name; }
-                    else if (XlFiles[2].Name == "bills.csv") { bills = XlFiles[2].FullPath; billsName = XlFiles[2].Name; }
-                    else { bills = ""; billsName = ""; }
-                }
-                {
-                    if (XlFiles[0].Name == "kiosk.xlsx") { kiosk = XlFiles[0].FullPath; kioskName = XlFiles[0].Name; }
-                    else if (XlFiles[1].Name == "kiosk.xlsx") { kiosk = XlFiles[1].FullPath; kioskName = XlFiles[1].Name; }
-                    else if (XlFiles[2].Name == "kiosk.xlsx") { kiosk = XlFiles[2].FullPath; kioskName = XlFiles[2].Name; }
-                    else { kiosk = ""; kioskName = ""; }
-                }
-                {
-                    if (XlFiles[0].Name == "mpos.CSV") { mPos = XlFiles[0].FullPath; mPosName = XlFiles[0].Name; }
-                    else if (XlFiles[1].Name == "mpos.CSV") { mPos = XlFiles[1].FullPath; mPosName = XlFiles[1].Name; }
-                    else if (XlFiles[2].Name == "mpos.CSV") { mPos = XlFiles[2].FullPath; mPosName = XlFiles[2].Name; }
-                    else { mPos = ""; mPosName = ""; }
-                }
+            bills = billsFiletxt.Text;
+            kiosk = kioskFiletxt.Text;
+            mPos = mPOSfileTxt.Text;
 
-                if (billsName == "bills.csv" && kioskName == "kiosk.xlsx" && mPosName == "mpos.CSV")
-                {
 
-                    // Open Excel A file.
-                    Aspose.Cells.Workbook SourceBook1 = new Aspose.Cells.Workbook(bills);
-
-                    // Open Excel B file.
-                    Aspose.Cells.Workbook SourceBook2 = new Aspose.Cells.Workbook(kiosk);
-
-                    // Open the third excel file.
-                    Aspose.Cells.Workbook SourceBook3 = new Aspose.Cells.Workbook(mPos);
+            if (bills != "" && kiosk != "" && mPos != "")
+               {
 
                     // Create destination Workbook.
                     Aspose.Cells.Workbook destWorkbook = new Aspose.Cells.Workbook();
                     // First worksheet is added by default to the Workbook. Add the second worksheet.
                     destWorkbook.Worksheets.Add();
                     destWorkbook.Worksheets.Add();
-                    // 
+                    destWorkbook.Worksheets.Add();
+                    //destWorkbook.Worksheets.Add();
+
+                   
+                    Aspose.Cells.Workbook SourceBook1 = new Aspose.Cells.Workbook(bills);
                     destWorkbook.Worksheets[0].Copy(SourceBook1.Worksheets[0]);
-
-                    //
-                    destWorkbook.Worksheets[1].Copy(SourceBook2.Worksheets[0]);
-                    //
-                    destWorkbook.Worksheets[2].Copy(SourceBook3.Worksheets[0]);
-
-                    // By default, the worksheet names are "Sheet1" and "Sheet2" respectively.
-                    // Lets give them meaningful names.
                     destWorkbook.Worksheets[0].Name = "Sheet1";
+
+                   
+                
+                    // Open Excel B file.
+                    Aspose.Cells.Workbook SourceBook2 = new Aspose.Cells.Workbook(kiosk);
+                    destWorkbook.Worksheets[1].Copy(SourceBook2.Worksheets[0]);
                     destWorkbook.Worksheets[1].Name = "Sheet2";
+
+                   
+                    // Open the third excel file.
+                    Aspose.Cells.Workbook SourceBook3 = new Aspose.Cells.Workbook(mPos);
+                    destWorkbook.Worksheets[2].Copy(SourceBook3.Worksheets[0]);
                     destWorkbook.Worksheets[2].Name = "Sheet3";
 
                     // Save the destination file.
                     destWorkbook.Save("CombinedFile1.xlsx");
+                    //System.Diagnostics.Process.Start("CombinedFile1.xlsx");
 
                     return true;
                 }
 
                 else
                 {
-                    MessageBox.Show("Please select 3 files with names bills, kiosk and mpos");
-                    XlFiles.Clear();
+                   MessageBox.Show("Please select 3 files with names bills, kiosk and mpos Batelco SIM");
                     return false;
                 }
 
-            }
-            else
-            {
-                MessageBox.Show("Please select 3 files with names bills, kiosk and mpos");
-                XlFiles.Clear();
-                return false;
-            }
         }
 
         public void read1 ()
         {
+            //  Aspose.Cells.Workbook workbook = new Aspose.Cells.Workbook("CombinedFile1.xlsx");
             string CombineFile = "CombinedFile1.xlsx";
             string commandText = "SELECT * FROM [Sheet1$]";
             string oledbConnectString = "Provider=Microsoft.ACE.OLEDB.12.0;" +
@@ -193,38 +197,40 @@ namespace BatelcoReport
             "Extended Properties=\"Excel 12.0;HDR=YES\";";
             OleDbConnection connection = new OleDbConnection(oledbConnectString);
             OleDbCommand command = new OleDbCommand(commandText, connection);
-            
+            //   DataTable dt = new DataTable();
+            // OleDbDataAdapter Adpt = new OleDbDataAdapter(commandText, connection);
             OleDbDataReader reader;
             try
             {
                 connection.Open();
                 reader = command.ExecuteReader();
-               
+                //  Adpt.Fill(dt);
+                //   dtGrid.ItemsSource = dt.DefaultView;
                 while (reader.Read())
                 {
                     if (reader["Transaction Status "].ToString().Trim() == "SUCCESS")
                     {
-                        BillsReports.Add(new SIMReport
+                        reports.Add(new Report
                         {
-                            ACCOUNT_NUMBER = (reader["Customer Phone Number "]).ToString(),
-                            CUSTOMER_NAME = reader["First Name "].ToString().Trim() + " " + reader["Last Name "].ToString().Trim(),
+                            ACCOUNT_NUMBER = reader["Customer Phone Number "].ToString(),
+                            CUSTOMER_NAME = default,
                             TRANSACTION_NUMBER = reader["Transaction Id "].ToString(),
 
                             PAYMENTDATE = Convert.ToDateTime(reader["Transaction Date "]),
 
                             Date_of_payment_execution = default,
-                            PRODUCTAMOUNT = Convert.ToDouble(reader["Transaction Amount "]),
+                            AMOUNT = Convert.ToDouble(reader["Transaction Amount "]),
 
                             Commission = default,
-                            VATAMOUNT = default,
+                            VAT = default,
                             Net_Amount = Convert.ToDouble(reader["Transaction Amount "]),
-                            KIOSKID = default,
+                            AUTHRIZATION_NO = default,
 
-                            PRODUCTNAME = "SIM",
+                            Service_Name = "TAM",
 
-                            ORDERNUMBER = reader["Reference Number Provider "].ToString().Trim(),
+                            REFERENCE_NO = reader["Reference Number Provider "].ToString().Trim(),
 
-                            PAYMENTLOCATION = "SIM",
+                            PAYMENTLOCATION = "YQB",
 
                             Transaction_Status = reader["Transaction Status "].ToString().Trim(),
                         });
@@ -243,8 +249,8 @@ namespace BatelcoReport
                 connection.Close();
             }
 
-        }
 
+        }
         public void read2 ()
         {
             string CombineFile = "CombinedFile1.xlsx";
@@ -254,9 +260,8 @@ namespace BatelcoReport
             "Extended Properties=\"Excel 12.0;HDR=YES\";";
             OleDbConnection connection = new OleDbConnection(oledbConnectString);
             OleDbCommand command = new OleDbCommand(commandText, connection);
-            DataTable dt = new DataTable();
+          
             OleDbDataReader reader;
-
             try
             {
                 connection.Open();
@@ -265,11 +270,11 @@ namespace BatelcoReport
                 //    dtGrid.ItemsSource = dt.DefaultView;
                 while (reader.Read())
                 {
-                    if (reader["BT Res"].ToString() == "Success")
+                    if (reader["BT Res"].ToString().Trim() == "Success")
                     {
                         reports.Add(new Report
                         {
-                            ACCOUNT_NUMBER = Convert.ToInt32(reader["Phone Number"]),
+                            ACCOUNT_NUMBER = (reader["Phone Number"]).ToString(),
                             CUSTOMER_NAME = default,
                             TRANSACTION_NUMBER = reader["Batelco Transaction ID"].ToString(),
 
@@ -287,12 +292,14 @@ namespace BatelcoReport
 
                             REFERENCE_NO = reader["YQ Transaction ID"].ToString(),
 
-                            PAYMENTLOCATION = default,
+                            PAYMENTLOCATION = "YQB",
 
                             Transaction_Status = reader["BT Res"].ToString(),
                         });
                     }
-                    
+                    //connection.Open();
+                    //int rowsAffected = command.ExecuteNonQuery();
+                    //connection.Close();
                 }
 
 
@@ -308,6 +315,7 @@ namespace BatelcoReport
         }
         public void read3 ()
         {
+            //  Aspose.Cells.Workbook workbook = new Aspose.Cells.Workbook("CombinedFile1.xlsx");
             string CombineFile = "CombinedFile1.xlsx";
             string commandText = "SELECT * FROM [Sheet3$]";
             string oledbConnectString = "Provider=Microsoft.ACE.OLEDB.12.0;" +
@@ -315,21 +323,22 @@ namespace BatelcoReport
             "Extended Properties=\"Excel 12.0;HDR=YES\";";
             OleDbConnection connection = new OleDbConnection(oledbConnectString);
             OleDbCommand command = new OleDbCommand(commandText, connection);
-            DataTable dt = new DataTable();
+            //  DataTable dt = new DataTable();
+            //   OleDbDataAdapter Adpt = new OleDbDataAdapter(commandText, connection);
             OleDbDataReader reader;
-
             try
             {
                 connection.Open();
                 reader = command.ExecuteReader();
-               
+                //   Adpt.Fill(dt);
+                //  dtGrid.ItemsSource = dt.DefaultView;
                 while (reader.Read())
                 {
                     if (reader["Transaction Status"].ToString().Trim() == "Success")
                     {
                         reports.Add(new Report
                         {
-                            ACCOUNT_NUMBER = Convert.ToInt32(reader["Circuit Number"]),
+                            ACCOUNT_NUMBER = reader["Circuit Number"].ToString(),
                             CUSTOMER_NAME = default,
                             TRANSACTION_NUMBER = reader["Batelco Transaction ID"].ToString(),
 
@@ -347,12 +356,14 @@ namespace BatelcoReport
 
                             REFERENCE_NO = reader["YQ Transactio ID"].ToString(),
 
-                            PAYMENTLOCATION = default,
+                            PAYMENTLOCATION = "YQB",
 
                             Transaction_Status = reader["Transaction Status"].ToString(),
                         });
                     }
-
+                    //connection.Open();
+                    //int rowsAffected = command.ExecuteNonQuery();
+                    //connection.Close();
                 }
 
 
@@ -366,12 +377,72 @@ namespace BatelcoReport
                 connection.Close();
             }
         }
+        public void read4 ()
+        {
+            string CombineFile = "CombinedFile1.xlsx";
+            string commandText = "SELECT * FROM [Sheet4$]";
+            string oledbConnectString = "Provider=Microsoft.ACE.OLEDB.12.0;" +
+            @"Data Source=" + CombineFile + ";" +
+            "Extended Properties=\"Excel 12.0;HDR=YES\";";
+            OleDbConnection connection = new OleDbConnection(oledbConnectString);
+            OleDbCommand command = new OleDbCommand(commandText, connection);
+            //   DataTable dt = new DataTable();
+            // OleDbDataAdapter Adpt = new OleDbDataAdapter(commandText, connection);
+            OleDbDataReader reader;
+            try
+            {
+                connection.Open();
+                reader = command.ExecuteReader();
+                //  Adpt.Fill(dt);
+                //   dtGrid.ItemsSource = dt.DefaultView;
+                while (reader.Read())
+                {
+                    if (reader["Status"].ToString().Trim() == "Complete")
+                    {
+                        BillsReports.Add(new SIMReport
+                        {
+                            ACCOUNT_NUMBER = reader["Customer Phone"].ToString(),
+                            CUSTOMER_NAME = reader["Branch Name"].ToString(),
+                            TRANSACTION_NUMBER = reader["Transaction Id "].ToString(),
 
+                            PAYMENTDATE = Convert.ToDateTime(reader["DateTime"]),
+
+                            Date_of_payment_execution = default,
+                            PRODUCTAMOUNT = Convert.ToDouble(reader["Pay Out Amount"]),
+
+                            Commission = default,
+                            VATAMOUNT = default,
+                            Net_Amount = Convert.ToDouble(reader["Pay Out Amount"]),
+                            KIOSKID = Convert.ToInt32(reader["Terminal ID"]),
+
+                            PRODUCTNAME = reader["Service Name"].ToString(),
+
+                            ORDERNUMBER = reader["KeySessionID"].ToString().Trim(),
+
+                            PAYMENTLOCATION = "SIM",
+
+                            Transaction_Status = reader["Status"].ToString().Trim(),
+                        });
+                    }
+
+                }
+
+
+                connection.Close();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("" + ex.Message);
+                connection.Close();
+            }
+        }
         public void ReadAll ()
         {
             read1();
             read2();
             read3();
+            read4();
         }
 
 
@@ -399,7 +470,7 @@ namespace BatelcoReport
             //cells size
             worksheet.Range["A1"].ColumnWidth = 21.43;
             worksheet.Range["B1"].ColumnWidth = 45.14;
-            worksheet.Range["C1"].ColumnWidth = 22.43;
+            worksheet.Range["C1"].ColumnWidth = 45.43;
             worksheet.Range["D1"].ColumnWidth = 25.71;
             worksheet.Range["E1"].ColumnWidth = 24.71;
             worksheet.Range["F1"].ColumnWidth = 17.57;
@@ -413,43 +484,36 @@ namespace BatelcoReport
             worksheet.Range["N1"].ColumnWidth = 16.57;
 
             //style and element
-            worksheet.Cells[3, 1] = "ACCOUNT NUMBER";
-            worksheet.Cells[3, 2] = "CUSTOMER NAME";
-            worksheet.Cells[3, 3] = "TRANSACTION NUMBER";
-            worksheet.Cells[3, 4] = "PAYMENTDATE";
-            worksheet.Cells[3, 5] = "Date of payment execution";
-            worksheet.Cells[3, 6] = "AMOUNT";
-            worksheet.Cells[3, 7] = "Commission";
-            worksheet.Cells[3, 8] = "VAT";
-            worksheet.Cells[3, 9] = "Net_Amount";
-            worksheet.Cells[3, 10] = "AUTHRIZATION_NO";
-            worksheet.Cells[3, 11] = "Service_Name";
-            worksheet.Cells[3, 12] = "REFERENCE_NO";
-            worksheet.Cells[3, 13] = "PAYMENTLOCATION";
-            worksheet.Cells[3, 14] = "Transaction_Status";
+            worksheet.Cells[1, 1] = "ACCOUNT NUMBER";
+            worksheet.Cells[1, 2] = "CUSTOMER NAME";
+            worksheet.Cells[1, 3] = "TRANSACTION NUMBER";
+            worksheet.Cells[1, 4] = "PAYMENTDATE";
+            worksheet.Cells[1, 5] = "Date of payment execution";
+            worksheet.Cells[1, 6] = "AMOUNT";
+            worksheet.Cells[1, 7] = "Commission";
+            worksheet.Cells[1, 8] = "VAT";
+            worksheet.Cells[1, 9] = "Net_Amount";
+            worksheet.Cells[1, 10] = "AUTHRIZATION_NO";
+            worksheet.Cells[1, 11] = "Service_Name";
+            worksheet.Cells[1, 12] = "REFERENCE_NO";
+            worksheet.Cells[1, 13] = "PAYMENTLOCATION";
+            worksheet.Cells[1, 14] = "Transaction_Status";
 
-            worksheet.Cells[2, 1] = "YQ (Kiosk, MPOS, TAM)";
-            worksheet.Cells[2, 4] = "TrnasactionDate";
-            worksheet.Cells[2, 5] = "To bank Account";
-            worksheet.Cells[2, 9] = "Transferred to Account";
-            worksheet.Cells[2, 10] = "To be empty";
-            worksheet.Cells[2, 13] = "To be defaultesd";
-            worksheet.Cells[2, 14] = "Success only";
 
-            worksheet.get_Range("A2:N2").Font.Bold = true;
-            worksheet.get_Range("A3:N3").Font.Bold = true;
-            worksheet.get_Range("A3", "N3").HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
-            worksheet.get_Range("A3", "N3").VerticalAlignment = Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignCenter;
+
+            worksheet.get_Range("A1:N1").Font.Bold = true;
+            worksheet.get_Range("A1", "N1").HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+            worksheet.get_Range("A1", "N1").VerticalAlignment = Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignCenter;
 
             worksheet.get_Range("A4", "N" + c + "").HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignRight;
             worksheet.get_Range("A4", "N" + c + "").VerticalAlignment = Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignBottom;
 
-            worksheet.get_Range("A2:N2").Font.Color = Color.FromArgb(255, 0, 0);
-            worksheet.get_Range("C3", "C" + c + "").Interior.Color = System.Drawing.Color.Yellow;
-            worksheet.get_Range("L3", "L" + c + "").Interior.Color = System.Drawing.Color.Yellow;
 
-            worksheet.get_Range("A3", "N" + c + "").Borders.LineStyle = ex.XlLineStyle.xlContinuous;
-            worksheet.get_Range("A3", "N" + c + "").Borders.Weight = ex.XlBorderWeight.xlThin;
+            worksheet.get_Range("C1", "C" + c + "").Interior.Color = System.Drawing.Color.Yellow;
+            worksheet.get_Range("L1", "L" + c + "").Interior.Color = System.Drawing.Color.Yellow;
+
+            worksheet.get_Range("A1", "N" + c + "").Borders.LineStyle = ex.XlLineStyle.xlContinuous;
+            worksheet.get_Range("A1", "N" + c + "").Borders.Weight = ex.XlBorderWeight.xlThin;
 
 
             Microsoft.Office.Interop.Excel.Range range = worksheet.UsedRange;
@@ -459,16 +523,16 @@ namespace BatelcoReport
 
 
 
-            for (int i = 4, n = 0; i < reports.Count - 1; i++, n++)
+            for (int i = 2, n = 0; i < reports.Count - 1; i++, n++)
             {
 
 
-                worksheet.Cells[i, 1].Value = reports[n].ACCOUNT_NUMBER;
+                worksheet.Cells[i, 1].Value = "973" + reports[n].ACCOUNT_NUMBER;
                 worksheet.Cells[i, 2].Value = reports[n].CUSTOMER_NAME;
                 worksheet.Cells[i, 3].Value = reports[n].TRANSACTION_NUMBER;
                 worksheet.Cells[i, 4].Value = reports[n].PAYMENTDATE.ToString("dd / MM / yyyy HH: mm:ss");
 
-                worksheet.Cells[i, 5].Value = reports[n].Date_of_payment_execution;
+                worksheet.Cells[i, 5].Value = "";
                 worksheet.Cells[i, 6].Value = reports[n].AMOUNT;
 
                 worksheet.Cells[i, 7].Value = reports[n].Commission;
@@ -489,16 +553,6 @@ namespace BatelcoReport
 
 
             int j = reports.Count + 1;
-
-
-            worksheet.Cells[j, 1] = "YQ (SIM)";
-            worksheet.Cells[j, 4] = "TrnasactionDate";
-            worksheet.Cells[j, 5] = "To bank Account";
-            worksheet.Cells[j, 9] = "Transferred to Account";
-            worksheet.Cells[j, 10] = "To be empty";
-            worksheet.Cells[j, 13] = "To be defaultesd";
-            worksheet.Cells[j, 14] = "Success only";
-            j++;
 
             worksheet.Cells[j, 1] = "ACCOUNT NUMBER";
             worksheet.Cells[j, 2] = "CUSTOMER NAME";
@@ -529,7 +583,7 @@ namespace BatelcoReport
                 worksheet.Cells[i, 2].Value = BillsReports[n].CUSTOMER_NAME;
                 worksheet.Cells[i, 3].Value = BillsReports[n].TRANSACTION_NUMBER;
                 worksheet.Cells[i, 4].Value = BillsReports[n].PAYMENTDATE.ToString("dd / MM / yyyy HH: mm:ss");
-                worksheet.Cells[i, 5].Value = BillsReports[n].Date_of_payment_execution;
+                worksheet.Cells[i, 5].Value = "";
                 worksheet.Cells[i, 6].Value = BillsReports[n].PRODUCTAMOUNT;
                 worksheet.Cells[i, 7].Value = BillsReports[n].Commission;
                 worksheet.Cells[i, 8].Value = BillsReports[n].VATAMOUNT;
@@ -588,9 +642,10 @@ namespace BatelcoReport
             {
                 this.Close();
             }
-          
+
 
         }
+
         public class strs
         {
             public int ACCOUNT_NUMBER { get; set; }
@@ -598,5 +653,6 @@ namespace BatelcoReport
 
         }
 
+       
     }
 }

@@ -4,7 +4,7 @@ namespace BatelcoReport
 {
     public class Report
     {
-        public int ACCOUNT_NUMBER { get; set; }
+        public string ACCOUNT_NUMBER { get; set; }
         public string CUSTOMER_NAME { get; set; }
 
         public string TRANSACTION_NUMBER { get; set; }

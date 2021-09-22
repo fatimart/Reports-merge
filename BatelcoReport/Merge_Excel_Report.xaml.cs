@@ -11,6 +11,7 @@ using System.IO;
 using Color = System.Drawing.Color;
 using ex = Microsoft.Office.Interop.Excel;
 using System.Drawing;
+using System.Globalization;
 
 namespace BatelcoReport
 {
@@ -271,10 +272,10 @@ namespace BatelcoReport
                 {
 
 
-                    if (reader["Transaction Status"].ToString().Trim() == "Success")
+                    if (reader["BT Res"].ToString().Trim() == "Success" && reader["Service Name"].ToString().Trim() == "Batelco Postpaid") 
                     {
 
-                        BillsReports.Add(new SIMReport
+                        reports.Add(new Report
                         {
                             ACCOUNT_NUMBER = (reader["Phone Number"]).ToString(),
                             CUSTOMER_NAME = default,
@@ -283,18 +284,18 @@ namespace BatelcoReport
                             PAYMENTDATE = Convert.ToDateTime(reader["Dateof Payment Received"]),
 
                             Date_of_payment_execution = default,
-                            PRODUCTAMOUNT = Convert.ToDouble(reader["Trx Amount"]),
+                            AMOUNT = Convert.ToDouble(reader["Trx Amount"]),
 
                             Commission = Convert.ToDouble(reader["Commission"]),
-                            VATAMOUNT = default,
+                            VAT = default,
                             Net_Amount = Convert.ToDouble(reader["Net Amount"]),
-                            KIOSKID = Convert.ToInt32(reader["Terminal ID"]),
+                            AUTHRIZATION_NO = Convert.ToInt32(reader["Terminal ID"]),
 
-                            PRODUCTNAME = reader["Channel Name"].ToString(),
+                            Service_Name = reader["Channel Name"].ToString(),
 
-                            ORDERNUMBER = reader["Transaction Refence No"].ToString(),
+                            REFERENCE_NO = reader["Transaction Refence No"].ToString(),
 
-                            PAYMENTLOCATION = "SIM",
+                            PAYMENTLOCATION = "YQB",
 
                             Transaction_Status = reader["BT Res"].ToString(),
                         });
@@ -332,10 +333,16 @@ namespace BatelcoReport
                 {
                     
 
-                    if (reader["Transaction Status"].ToString().Trim() == "Success")
+                    if (reader["Transaction Status"].ToString().Trim() == "Success" && reader["Service Provider"].ToString().Trim() == "Batelco"  && reader["Service Name"].ToString().Trim() == "Batelco Postpaid")
                     {
-                         double refg = Convert.ToDouble(reader["YQ Transactio ID"]);
-                        MessageBox.Show(refg.ToString());
+                        double amount;
+                        double.TryParse(reader["YQ Transactio ID"].ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out amount);
+                        string stringRepresentationOfDoubleValue = amount.ToString("###");
+                        //MessageBox.Show(stringRepresentationOfDoubleValue);
+
+
+                        double refg = Convert.ToDouble(reader["YQ Transactio ID"]);
+                        //MessageBox.Show(refg.ToString());
 
                         TAMReports.Add(new BillReport
                         {
@@ -355,7 +362,7 @@ namespace BatelcoReport
 
                             Service_Name = reader["Channel Name"].ToString(),
 
-                            REFERENCE_NO = Convert.To(reader["YQ Transactio ID"]),
+                            REFERENCE_NO = reader["YQ Transactio ID"].ToString(),
 
                             PAYMENTLOCATION = "YQB",
 
@@ -438,6 +445,7 @@ namespace BatelcoReport
             worksheet.Cells[1, 13] = "PAYMENTLOCATION";
             worksheet.Cells[1, 14] = "Transaction_Status";
 
+            worksheet.get_Range("A2", "N" + c + "").NumberFormat = "@";
 
 
             worksheet.get_Range("A1:N1").Font.Bold = true;
@@ -511,7 +519,8 @@ namespace BatelcoReport
 
                 worksheet.Cells[i, 10].Value = "";
                 worksheet.Cells[i, 11].Value = TAMReports[n].Service_Name;
-                worksheet.Cells[i, 12].Value = TAMReports[n].REFERENCE_NO.ToString();
+
+                worksheet.Cells[i, 12].Value = TAMReports[n].REFERENCE_NO;
 
                 worksheet.Cells[i, 13].Value = TAMReports[n].PAYMENTLOCATION;
                 worksheet.Cells[i, 14].Value = "Success";

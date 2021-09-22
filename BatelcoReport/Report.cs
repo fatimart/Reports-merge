@@ -49,7 +49,7 @@ namespace BatelcoReport
 
         public string Service_Name { get; set; }
 
-        public double REFERENCE_NO { get; set; }
+        public string REFERENCE_NO { get; set; }
 
         public string PAYMENTLOCATION { get; set; }
 

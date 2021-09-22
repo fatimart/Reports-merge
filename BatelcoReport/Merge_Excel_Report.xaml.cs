@@ -22,6 +22,8 @@ namespace BatelcoReport
         public ObservableCollection<XlFile> XlFiles { get; } = new ObservableCollection<XlFile>();
         public ObservableCollection<Report> reports { get; } = new ObservableCollection<Report>();
         public ObservableCollection<SIMReport> BillsReports { get; } = new ObservableCollection<SIMReport>();
+        public ObservableCollection<BillReport> TAMReports { get; } = new ObservableCollection<BillReport>();
+
         public ObservableCollection<strs> str { get; } = new ObservableCollection<strs>();
 
         public Merge_Excel_Report ()
@@ -195,47 +197,48 @@ namespace BatelcoReport
             "Extended Properties=\"Excel 12.0;HDR=YES\";";
             OleDbConnection connection = new OleDbConnection(oledbConnectString);
             OleDbCommand command = new OleDbCommand(commandText, connection);
-            //   DataTable dt = new DataTable();
-            // OleDbDataAdapter Adpt = new OleDbDataAdapter(commandText, connection);
             OleDbDataReader reader;
+
             try
             {
                 connection.Open();
                 reader = command.ExecuteReader();
-                //  Adpt.Fill(dt);
-                //   dtGrid.ItemsSource = dt.DefaultView;
                 while (reader.Read())
                 {
-                    if (reader["Transaction Status "].ToString().Trim() == "SUCCESS")
+                    if (reader["Transaction Status "].ToString().Trim() == "SUCCESS" &&  reader["Operation Type "].ToString().Trim() == "BILL_PAYMENT")
                     {
-                        reports.Add(new Report
+                        if (reader["Service Name "].ToString().Trim() == "BATELCO" || reader["Service Name "].ToString().Trim() == "Batelco")
                         {
-                            ACCOUNT_NUMBER = reader["Customer Phone Number "].ToString(),
-                            CUSTOMER_NAME = default,
-                            TRANSACTION_NUMBER = reader["Transaction Id "].ToString(),
+                            string PaymentDate = reader["Transaction Date "].ToString().Trim() + " " + reader["Transaction Time "].ToString().Trim();
 
-                            PAYMENTDATE = Convert.ToDateTime(reader["Transaction Date "]),
+                            reports.Add(new Report
+                            {
+                                ACCOUNT_NUMBER = reader["Customer Phone Number "].ToString(),
+                                CUSTOMER_NAME = default,
+                                TRANSACTION_NUMBER = reader["Reference Number Provider "].ToString(),
 
-                            Date_of_payment_execution = default,
-                            AMOUNT = Convert.ToDouble(reader["Transaction Amount "]),
+                                PAYMENTDATE = Convert.ToDateTime(PaymentDate),
+                                Date_of_payment_execution = default,
+                                AMOUNT = Convert.ToDouble(reader["Transaction Amount "]),
 
-                            Commission = default,
-                            VAT = default,
-                            Net_Amount = Convert.ToDouble(reader["Transaction Amount "]),
-                            AUTHRIZATION_NO = default,
+                                Commission = default,
+                                VAT = default,
+                                Net_Amount = Convert.ToDouble(reader["Transaction Amount "]),
+                                AUTHRIZATION_NO = default,
 
-                            Service_Name = "TAM",
+                                Service_Name = "TAM",
 
-                            REFERENCE_NO = reader["Reference Number Provider "].ToString().Trim(),
+                                REFERENCE_NO = reader["Transaction Id "].ToString(),
 
-                            PAYMENTLOCATION = "YQB",
+                                PAYMENTLOCATION = "YQB",
 
-                            Transaction_Status = reader["Transaction Status "].ToString().Trim(),
-                        });
+                                Transaction_Status = reader["Transaction Status "].ToString().Trim(),
+                            });
+                        }
                     }
 
                 }
-
+                
 
                 connection.Close();
 
@@ -264,44 +267,41 @@ namespace BatelcoReport
             {
                 connection.Open();
                 reader = command.ExecuteReader();
-                //      Adpt.Fill(dt);
-                //    dtGrid.ItemsSource = dt.DefaultView;
                 while (reader.Read())
                 {
 
 
-
-
-                    BillsReports.Add(new SIMReport
+                    if (reader["Transaction Status"].ToString().Trim() == "Success")
                     {
-                        ACCOUNT_NUMBER = (reader["Phone Number"]).ToString(),
-                        CUSTOMER_NAME = default,
-                        TRANSACTION_NUMBER = reader["Batelco Transaction ID"].ToString(),
 
-                        PAYMENTDATE = Convert.ToDateTime(reader["Dateof Payment Received"]),
+                        BillsReports.Add(new SIMReport
+                        {
+                            ACCOUNT_NUMBER = (reader["Phone Number"]).ToString(),
+                            CUSTOMER_NAME = default,
+                            TRANSACTION_NUMBER = reader["Batelco Transaction ID"].ToString(),
 
-                        Date_of_payment_execution = default,
-                        PRODUCTAMOUNT = Convert.ToDouble(reader["Trx Amount"]),
+                            PAYMENTDATE = Convert.ToDateTime(reader["Dateof Payment Received"]),
 
-                        Commission = Convert.ToDouble(reader["Commission"]),
-                        VATAMOUNT = default,
-                        Net_Amount = Convert.ToDouble(reader["Net Amount"]),
-                        KIOSKID = Convert.ToInt32(reader["Terminal ID"]),
+                            Date_of_payment_execution = default,
+                            PRODUCTAMOUNT = Convert.ToDouble(reader["Trx Amount"]),
 
-                        PRODUCTNAME = reader["Channel Name"].ToString(),
+                            Commission = Convert.ToDouble(reader["Commission"]),
+                            VATAMOUNT = default,
+                            Net_Amount = Convert.ToDouble(reader["Net Amount"]),
+                            KIOSKID = Convert.ToInt32(reader["Terminal ID"]),
 
-                        ORDERNUMBER = reader["Transaction Refence No"].ToString(),
+                            PRODUCTNAME = reader["Channel Name"].ToString(),
 
-                        PAYMENTLOCATION = "SIM",
+                            ORDERNUMBER = reader["Transaction Refence No"].ToString(),
 
-                        Transaction_Status = reader["BT Res"].ToString(),
-                    });
+                            PAYMENTLOCATION = "SIM",
+
+                            Transaction_Status = reader["BT Res"].ToString(),
+                        });
+                    }
+                   
+
                 }
-                //connection.Open();
-                //int rowsAffected = command.ExecuteNonQuery();
-                //connection.Close();
-            
-            
 
                 connection.Close();
 
@@ -315,7 +315,6 @@ namespace BatelcoReport
         }
         public void read3 ()
         {
-            //  Aspose.Cells.Workbook workbook = new Aspose.Cells.Workbook("CombinedFile1.xlsx");
             string CombineFile = "CombinedFile1.xlsx";
             string commandText = "SELECT * FROM [Sheet3$]";
             string oledbConnectString = "Provider=Microsoft.ACE.OLEDB.12.0;" +
@@ -323,20 +322,22 @@ namespace BatelcoReport
             "Extended Properties=\"Excel 12.0;HDR=YES\";";
             OleDbConnection connection = new OleDbConnection(oledbConnectString);
             OleDbCommand command = new OleDbCommand(commandText, connection);
-            //  DataTable dt = new DataTable();
-            //   OleDbDataAdapter Adpt = new OleDbDataAdapter(commandText, connection);
             OleDbDataReader reader;
             try
             {
                 connection.Open();
                 reader = command.ExecuteReader();
-                //   Adpt.Fill(dt);
-                //  dtGrid.ItemsSource = dt.DefaultView;
+
                 while (reader.Read())
                 {
+                    
+
                     if (reader["Transaction Status"].ToString().Trim() == "Success")
                     {
-                        reports.Add(new Report
+                         double refg = Convert.ToDouble(reader["YQ Transactio ID"]);
+                        MessageBox.Show(refg.ToString());
+
+                        TAMReports.Add(new BillReport
                         {
                             ACCOUNT_NUMBER = reader["Circuit Number"].ToString(),
                             CUSTOMER_NAME = default,
@@ -354,16 +355,14 @@ namespace BatelcoReport
 
                             Service_Name = reader["Channel Name"].ToString(),
 
-                            REFERENCE_NO = reader["YQ Transactio ID"].ToString(),
+                            REFERENCE_NO = Convert.To(reader["YQ Transactio ID"]),
 
                             PAYMENTLOCATION = "YQB",
 
                             Transaction_Status = reader["Transaction Status"].ToString(),
                         });
                     }
-                    //connection.Open();
-                    //int rowsAffected = command.ExecuteNonQuery();
-                    //connection.Close();
+                  
                 }
 
 
@@ -377,72 +376,12 @@ namespace BatelcoReport
                 connection.Close();
             }
         }
-        //public void read4 ()
-        //{
-        //    string CombineFile = "CombinedFile1.xlsx";
-        //    string commandText = "SELECT * FROM [Sheet4$]";
-        //    string oledbConnectString = "Provider=Microsoft.ACE.OLEDB.12.0;" +
-        //    @"Data Source=" + CombineFile + ";" +
-        //    "Extended Properties=\"Excel 12.0;HDR=YES\";";
-        //    OleDbConnection connection = new OleDbConnection(oledbConnectString);
-        //    OleDbCommand command = new OleDbCommand(commandText, connection);
-        //    //   DataTable dt = new DataTable();
-        //    // OleDbDataAdapter Adpt = new OleDbDataAdapter(commandText, connection);
-        //    OleDbDataReader reader;
-        //    try
-        //    {
-        //        connection.Open();
-        //        reader = command.ExecuteReader();
-        //        //  Adpt.Fill(dt);
-        //        //   dtGrid.ItemsSource = dt.DefaultView;
-        //        while (reader.Read())
-        //        {
-        //            if (reader["Status"].ToString().Trim() == "Complete")
-        //            {
-        //                BillsReports.Add(new SIMReport
-        //                {
-        //                    ACCOUNT_NUMBER = reader["Customer Phone"].ToString(),
-        //                    CUSTOMER_NAME = reader["Branch Name"].ToString(),
-        //                    TRANSACTION_NUMBER = reader["Transaction Id "].ToString(),
-
-        //                    PAYMENTDATE = Convert.ToDateTime(reader["DateTime"]),
-
-        //                    Date_of_payment_execution = default,
-        //                    PRODUCTAMOUNT = Convert.ToDouble(reader["Pay Out Amount"]),
-
-        //                    Commission = default,
-        //                    VATAMOUNT = default,
-        //                    Net_Amount = Convert.ToDouble(reader["Pay Out Amount"]),
-        //                    KIOSKID = Convert.ToInt32(reader["Terminal ID"]),
-
-        //                    PRODUCTNAME = reader["Service Name"].ToString(),
-
-        //                    ORDERNUMBER = reader["KeySessionID"].ToString().Trim(),
-
-        //                    PAYMENTLOCATION = "SIM",
-
-        //                    Transaction_Status = reader["Status"].ToString().Trim(),
-        //                });
-        //            }
-
-        //        }
-
-
-        //        connection.Close();
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show("" + ex.Message);
-        //        connection.Close();
-        //    }
-        //}
+       
         public void ReadAll ()
         {
             read1();
             read2();
             read3();
-            //read4();
         }
 
 
@@ -546,10 +485,38 @@ namespace BatelcoReport
                 worksheet.Cells[i, 12].Value = reports[n].REFERENCE_NO;
 
                 worksheet.Cells[i, 13].Value = reports[n].PAYMENTLOCATION;
-                worksheet.Cells[i, 14].Value = reports[n].Transaction_Status;
+                worksheet.Cells[i, 14].Value = "Success";
 
             }
 
+            int k = reports.Count + 1;
+
+            for (int i = k, n = 0; n < TAMReports.Count - 1; n++, i++)
+            {
+
+
+                worksheet.Cells[i, 1].Value = "973" + TAMReports[n].ACCOUNT_NUMBER;
+                worksheet.Cells[i, 2].Value = TAMReports[n].CUSTOMER_NAME;
+                worksheet.Cells[i, 3].Value = TAMReports[n].TRANSACTION_NUMBER;
+                worksheet.Cells[i, 4].Value = TAMReports[n].PAYMENTDATE.ToString("dd / MM / yyyy HH: mm:ss");
+
+                worksheet.Cells[i, 5].Value = "";
+                worksheet.Cells[i, 6].Value = TAMReports[n].AMOUNT;
+
+                worksheet.Cells[i, 7].Value = TAMReports[n].Commission;
+
+                worksheet.Cells[i, 8].Value = TAMReports[n].VAT;
+
+                worksheet.Cells[i, 9].Value = (TAMReports[n].AMOUNT - TAMReports[n].Commission - TAMReports[n].VAT);
+
+                worksheet.Cells[i, 10].Value = "";
+                worksheet.Cells[i, 11].Value = TAMReports[n].Service_Name;
+                worksheet.Cells[i, 12].Value = TAMReports[n].REFERENCE_NO.ToString();
+
+                worksheet.Cells[i, 13].Value = TAMReports[n].PAYMENTLOCATION;
+                worksheet.Cells[i, 14].Value = "Success";
+
+            }
 
 
             int j = reports.Count + 1;
@@ -569,11 +536,7 @@ namespace BatelcoReport
             worksheet.Cells[j, 13] = "PAYMENTLOCATION";
             worksheet.Cells[j, 14] = "Transaction Status";
 
-            for (int i = j; i <= 14; i++)
-            {
-                worksheet.get_Range("A'" + j + "':N'" + j + "'").Font.Bold = true;
-
-            }
+           
 
             j++;
 
@@ -592,7 +555,7 @@ namespace BatelcoReport
                 worksheet.Cells[i, 11].Value = BillsReports[n].PRODUCTNAME;
                 worksheet.Cells[i, 12].Value = BillsReports[n].ORDERNUMBER;
                 worksheet.Cells[i, 13].Value = BillsReports[n].PAYMENTLOCATION;
-                worksheet.Cells[i, 14].Value = BillsReports[n].Transaction_Status;
+                worksheet.Cells[i, 14].Value = "Success";
 
 
             }

@@ -579,7 +579,7 @@ namespace BatelcoReport
 
             for (int i = j, n = 0; n < BillsReports.Count - 1; n++, i++)
             {
-                worksheet.Cells[i, 1].Value = BillsReports[n].ACCOUNT_NUMBER;
+                worksheet.Cells[i, 1].Value = "973" + BillsReports[n].ACCOUNT_NUMBER;
                 worksheet.Cells[i, 2].Value = BillsReports[n].CUSTOMER_NAME;
                 worksheet.Cells[i, 3].Value = BillsReports[n].TRANSACTION_NUMBER;
                 worksheet.Cells[i, 4].Value = BillsReports[n].PAYMENTDATE.ToString("dd / MM / yyyy HH: mm:ss");

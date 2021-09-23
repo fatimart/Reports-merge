@@ -190,7 +190,6 @@ namespace BatelcoReport
 
         public void read1 ()
         {
-            //  Aspose.Cells.Workbook workbook = new Aspose.Cells.Workbook("CombinedFile1.xlsx");
             string CombineFile = "CombinedFile1.xlsx";
             string commandText = "SELECT * FROM [Sheet1$]";
             string oledbConnectString = "Provider=Microsoft.ACE.OLEDB.12.0;" +
@@ -335,16 +334,10 @@ namespace BatelcoReport
 
                     if (reader["Transaction Status"].ToString().Trim() == "Success" && reader["Service Provider"].ToString().Trim() == "Batelco"  && reader["Service Name"].ToString().Trim() == "Batelco Postpaid")
                     {
-                        double amount;
-                        double.TryParse(reader["YQ Transactio ID"].ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out amount);
-                        string stringRepresentationOfDoubleValue = amount.ToString("###");
-                        //MessageBox.Show(stringRepresentationOfDoubleValue);
-
-
+                        
                         double refg = Convert.ToDouble(reader["YQ Transactio ID"]);
-                        //MessageBox.Show(refg.ToString());
 
-                        TAMReports.Add(new BillReport
+                        reports.Add(new Report
                         {
                             ACCOUNT_NUMBER = reader["Circuit Number"].ToString(),
                             CUSTOMER_NAME = default,
@@ -497,57 +490,10 @@ namespace BatelcoReport
 
             }
 
-            int k = reports.Count + 1;
+       
 
-            for (int i = k, n = 0; n < TAMReports.Count - 1; n++, i++)
-            {
+            int j = reports.Count - 1;
 
-
-                worksheet.Cells[i, 1].Value = "973" + TAMReports[n].ACCOUNT_NUMBER;
-                worksheet.Cells[i, 2].Value = TAMReports[n].CUSTOMER_NAME;
-                worksheet.Cells[i, 3].Value = TAMReports[n].TRANSACTION_NUMBER;
-                worksheet.Cells[i, 4].Value = TAMReports[n].PAYMENTDATE.ToString("dd / MM / yyyy HH: mm:ss");
-
-                worksheet.Cells[i, 5].Value = "";
-                worksheet.Cells[i, 6].Value = TAMReports[n].AMOUNT;
-
-                worksheet.Cells[i, 7].Value = TAMReports[n].Commission;
-
-                worksheet.Cells[i, 8].Value = TAMReports[n].VAT;
-
-                worksheet.Cells[i, 9].Value = (TAMReports[n].AMOUNT - TAMReports[n].Commission - TAMReports[n].VAT);
-
-                worksheet.Cells[i, 10].Value = "";
-                worksheet.Cells[i, 11].Value = TAMReports[n].Service_Name;
-
-                worksheet.Cells[i, 12].Value = TAMReports[n].REFERENCE_NO;
-
-                worksheet.Cells[i, 13].Value = TAMReports[n].PAYMENTLOCATION;
-                worksheet.Cells[i, 14].Value = "Success";
-
-            }
-
-
-            int j = reports.Count + 1;
-
-            worksheet.Cells[j, 1] = "ACCOUNT NUMBER";
-            worksheet.Cells[j, 2] = "CUSTOMER NAME";
-            worksheet.Cells[j, 3] = "TRANSACTION_NUMBER";
-            worksheet.Cells[j, 4] = "PAYMENTDATE";
-            worksheet.Cells[j, 5] = "Date of payment execution";
-            worksheet.Cells[j, 6] = "PRODUCTAMOUNT";
-            worksheet.Cells[j, 7] = "Commission";
-            worksheet.Cells[j, 8] = "VATAMOUNT";
-            worksheet.Cells[j, 9] = "TOTALTRANSACTIONAMOUNT";
-            worksheet.Cells[j, 10] = "KIOSKID";
-            worksheet.Cells[j, 11] = "PRODUCTNAME";
-            worksheet.Cells[j, 12] = "ORDERNUMBER";
-            worksheet.Cells[j, 13] = "PAYMENTLOCATION";
-            worksheet.Cells[j, 14] = "Transaction Status";
-
-           
-
-            j++;
 
             for (int i = j, n = 0; n < BillsReports.Count - 1; n++, i++)
             {
@@ -568,8 +514,7 @@ namespace BatelcoReport
 
 
             }
-            int C1 = j + BillsReports.Count - 2;
-            worksheet.get_Range("A" + (j - 1) + "", "N" + (j - 1) + "").Font.Bold = true;
+            int C1 = j + BillsReports.Count -2 ;
             worksheet.get_Range("A" + (j - 1) + "", "N" + (j - 1) + "").HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
             worksheet.get_Range("A" + (j - 1) + "", "N" + (j - 1) + "").VerticalAlignment = Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignCenter;
 
@@ -578,12 +523,11 @@ namespace BatelcoReport
 
             worksheet.get_Range("A" + (j - 1) + "", "N" + C1 + "").Borders.LineStyle = ex.XlLineStyle.xlContinuous;
             worksheet.get_Range("A" + (j - 1) + "", "N" + C1 + "").Borders.Weight = ex.XlBorderWeight.xlThin;
-            worksheet.Cells[(C1 + 2), 4].Value = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
 
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Title = "Save Excel sheet";
             saveFileDialog1.Filter = "Excel files|*.xlsx|All files|*.*";
-            saveFileDialog1.FileName = "YQ_Sample_Report" + DateTime.Now.ToString("dd-MM-yyyy") + ".xlsx";
+            saveFileDialog1.FileName = "YQ_Sample_Report " + DateTime.Now.ToString("dd-MM-yyyy") + ".xlsx";
 
 
             if (saveFileDialog1.ShowDialog() == true)

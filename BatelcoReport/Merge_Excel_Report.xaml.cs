@@ -448,10 +448,6 @@ namespace BatelcoReport
             worksheet.get_Range("A2", "N" + c + "").HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignRight;
             worksheet.get_Range("A2", "N" + c + "").VerticalAlignment = Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignBottom;
 
-
-            worksheet.get_Range("C1", "C" + c + "").Interior.Color = System.Drawing.Color.Yellow;
-            worksheet.get_Range("L1", "L" + c + "").Interior.Color = System.Drawing.Color.Yellow;
-
             worksheet.get_Range("A1", "N" + c + "").Borders.LineStyle = ex.XlLineStyle.xlContinuous;
             worksheet.get_Range("A1", "N" + c + "").Borders.Weight = ex.XlBorderWeight.xlThin;
 

@@ -464,7 +464,7 @@ namespace BatelcoReport
 
 
                 worksheet.Cells[i, 1].Value = "973" + reports[n].ACCOUNT_NUMBER.Trim();
-                worksheet.Cells[i, 2].Value ="";
+                worksheet.Cells[i, 2].Value = "";
                 worksheet.Cells[i, 3].Value = reports[n].TRANSACTION_NUMBER.ToString().Trim();
                 worksheet.Cells[i, 4].Value = reports[n].PAYMENTDATE.ToString("dd/MM/yyyy HH: mm:ss").Trim();
 
@@ -486,7 +486,8 @@ namespace BatelcoReport
 
             }
 
-       
+
+
 
             int j = reports.Count - 1;
 

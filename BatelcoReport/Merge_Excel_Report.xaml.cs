@@ -276,9 +276,9 @@ namespace BatelcoReport
 
                         reports.Add(new Report
                         {
-                            ACCOUNT_NUMBER = (reader["Phone Number"]).ToString(),
+                            ACCOUNT_NUMBER = (reader["Phone Number"]).ToString().Trim(),
                             CUSTOMER_NAME = default,
-                            TRANSACTION_NUMBER = reader["Batelco Transaction ID"].ToString(),
+                            TRANSACTION_NUMBER = reader["Batelco Transaction ID"].ToString().Trim(),
 
                             PAYMENTDATE = Convert.ToDateTime(reader["Dateof Payment Received"]),
 
@@ -290,13 +290,13 @@ namespace BatelcoReport
                             Net_Amount = Convert.ToDouble(reader["Net Amount"]),
                             AUTHRIZATION_NO = Convert.ToInt32(reader["Terminal ID"]),
 
-                            Service_Name = reader["Channel Name"].ToString(),
+                            Service_Name = reader["Channel Name"].ToString().Trim(),
 
-                            REFERENCE_NO = reader["Transaction Refence No"].ToString(),
+                            REFERENCE_NO = reader["Transaction Refence No"].ToString().Trim(),
 
                             PAYMENTLOCATION = "YQB",
 
-                            Transaction_Status = reader["BT Res"].ToString(),
+                            Transaction_Status = reader["BT Res"].ToString().Trim(),
                         });
                     }
                    
@@ -463,25 +463,25 @@ namespace BatelcoReport
             {
 
 
-                worksheet.Cells[i, 1].Value = "973" + reports[n].ACCOUNT_NUMBER;
-                worksheet.Cells[i, 2].Value = reports[n].CUSTOMER_NAME;
-                worksheet.Cells[i, 3].Value = reports[n].TRANSACTION_NUMBER;
-                worksheet.Cells[i, 4].Value = reports[n].PAYMENTDATE.ToString("dd / MM / yyyy HH: mm:ss");
+                worksheet.Cells[i, 1].Value = "973" + reports[n].ACCOUNT_NUMBER.Trim();
+                worksheet.Cells[i, 2].Value ="";
+                worksheet.Cells[i, 3].Value = reports[n].TRANSACTION_NUMBER.ToString().Trim();
+                worksheet.Cells[i, 4].Value = reports[n].PAYMENTDATE.ToString("dd/MM/yyyy HH: mm:ss").Trim();
 
                 worksheet.Cells[i, 5].Value = "";
-                worksheet.Cells[i, 6].Value = reports[n].AMOUNT;
+                worksheet.Cells[i, 6].Value = reports[n].AMOUNT.ToString().Trim();
 
-                worksheet.Cells[i, 7].Value = reports[n].Commission;
+                worksheet.Cells[i, 7].Value = reports[n].Commission.ToString().Trim();
 
-                worksheet.Cells[i, 8].Value = reports[n].VAT;
+                worksheet.Cells[i, 8].Value = reports[n].VAT.ToString().Trim();
 
                 worksheet.Cells[i, 9].Value = (reports[n].AMOUNT - reports[n].Commission - reports[n].VAT);
 
                 worksheet.Cells[i, 10].Value = "";
-                worksheet.Cells[i, 11].Value = reports[n].Service_Name;
-                worksheet.Cells[i, 12].Value = reports[n].REFERENCE_NO;
+                worksheet.Cells[i, 11].Value = reports[n].Service_Name.Trim();
+                worksheet.Cells[i, 12].Value = reports[n].REFERENCE_NO.Trim();
 
-                worksheet.Cells[i, 13].Value = reports[n].PAYMENTLOCATION;
+                worksheet.Cells[i, 13].Value = reports[n].PAYMENTLOCATION.Trim();
                 worksheet.Cells[i, 14].Value = "Success";
 
             }
@@ -493,32 +493,32 @@ namespace BatelcoReport
 
             for (int i = j, n = 0; n < BillsReports.Count - 1; n++, i++)
             {
-                worksheet.Cells[i, 1].Value = "973" + BillsReports[n].ACCOUNT_NUMBER;
-                worksheet.Cells[i, 2].Value = BillsReports[n].CUSTOMER_NAME;
-                worksheet.Cells[i, 3].Value = BillsReports[n].TRANSACTION_NUMBER;
-                worksheet.Cells[i, 4].Value = BillsReports[n].PAYMENTDATE.ToString("dd / MM / yyyy HH: mm:ss");
+                worksheet.Cells[i, 1].Value = "973" + BillsReports[n].ACCOUNT_NUMBER.Trim();
+                worksheet.Cells[i, 2].Value = BillsReports[n].CUSTOMER_NAME.Trim();
+                worksheet.Cells[i, 3].Value = BillsReports[n].TRANSACTION_NUMBER.ToString().Trim();
+                worksheet.Cells[i, 4].Value = BillsReports[n].PAYMENTDATE.ToString("dd/MM/yyyy HH: mm:ss").Trim();
                 worksheet.Cells[i, 5].Value = "";
-                worksheet.Cells[i, 6].Value = BillsReports[n].PRODUCTAMOUNT;
-                worksheet.Cells[i, 7].Value = BillsReports[n].Commission;
-                worksheet.Cells[i, 8].Value = BillsReports[n].VATAMOUNT;
-                worksheet.Cells[i, 9].Value = (BillsReports[n].PRODUCTAMOUNT - BillsReports[n].Commission - BillsReports[n].VATAMOUNT);
-                worksheet.Cells[i, 10].Value = BillsReports[n].KIOSKID;
-                worksheet.Cells[i, 11].Value = BillsReports[n].PRODUCTNAME;
-                worksheet.Cells[i, 12].Value = BillsReports[n].ORDERNUMBER;
-                worksheet.Cells[i, 13].Value = BillsReports[n].PAYMENTLOCATION;
+                worksheet.Cells[i, 6].Value = BillsReports[n].PRODUCTAMOUNT.ToString().Trim();
+                worksheet.Cells[i, 7].Value = BillsReports[n].Commission.ToString().Trim();
+                worksheet.Cells[i, 8].Value = BillsReports[n].VATAMOUNT.ToString().Trim();
+                worksheet.Cells[i, 9].Value = (BillsReports[n].PRODUCTAMOUNT - BillsReports[n].Commission - BillsReports[n].VATAMOUNT).ToString().Trim();
+                worksheet.Cells[i, 10].Value = BillsReports[n].KIOSKID.ToString().Trim();
+                worksheet.Cells[i, 11].Value = BillsReports[n].PRODUCTNAME.Trim();
+                worksheet.Cells[i, 12].Value = BillsReports[n].ORDERNUMBER.Trim();
+                worksheet.Cells[i, 13].Value = BillsReports[n].PAYMENTLOCATION.Trim();
                 worksheet.Cells[i, 14].Value = "Success";
 
 
             }
-            int C1 = j + BillsReports.Count -2 ;
-            worksheet.get_Range("A" + (j - 1) + "", "N" + (j - 1) + "").HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
-            worksheet.get_Range("A" + (j - 1) + "", "N" + (j - 1) + "").VerticalAlignment = Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignCenter;
+            //int C1 = j + BillsReports.Count -2 ;
+            //worksheet.get_Range("A" + (j - 1) + "", "N" + (j - 1) + "").HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
+            //worksheet.get_Range("A" + (j - 1) + "", "N" + (j - 1) + "").VerticalAlignment = Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignCenter;
 
-            worksheet.get_Range("A" + j + "", "N" + C1 + "").HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignRight;
-            worksheet.get_Range("A" + j + "", "N" + C1 + "").VerticalAlignment = Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignBottom;
+            //worksheet.get_Range("A" + j + "", "N" + C1 + "").HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignRight;
+            //worksheet.get_Range("A" + j + "", "N" + C1 + "").VerticalAlignment = Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignBottom;
 
-            worksheet.get_Range("A" + (j - 1) + "", "N" + C1 + "").Borders.LineStyle = ex.XlLineStyle.xlContinuous;
-            worksheet.get_Range("A" + (j - 1) + "", "N" + C1 + "").Borders.Weight = ex.XlBorderWeight.xlThin;
+            //worksheet.get_Range("A" + (j - 1) + "", "N" + C1 + "").Borders.LineStyle = ex.XlLineStyle.xlContinuous;
+            //worksheet.get_Range("A" + (j - 1) + "", "N" + C1 + "").Borders.Weight = ex.XlBorderWeight.xlThin;
 
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Title = "Save Excel sheet";

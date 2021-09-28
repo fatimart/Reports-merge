@@ -229,7 +229,7 @@ namespace BatelcoReport
 
             catch (Exception ex)
             {
-                MessageBox.Show("ERROR in file 1: Please Select valid file");
+                MessageBox.Show("ERROR in file 1: Please Select valid kiosk file");
                 connection.Close();
                 return false;
             }
@@ -294,7 +294,7 @@ namespace BatelcoReport
 
             catch (Exception ex)
             {
-                MessageBox.Show("ERROR in file 2: Please Select valid file");
+                MessageBox.Show("ERROR in file 2: Please Select a valid bills file");
                 connection.Close();
                 return false;
 
@@ -361,7 +361,7 @@ namespace BatelcoReport
 
             catch (Exception ex)
             {
-                MessageBox.Show("ERROR in file 3: Please Select valid file");
+                MessageBox.Show("ERROR in file 3: Please Select a valid mPOS file");
                 connection.Close();
                 return false;
 

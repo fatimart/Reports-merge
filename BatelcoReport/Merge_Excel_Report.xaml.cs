@@ -469,6 +469,8 @@ namespace BatelcoReport
                 worksheet.Cells[i, 5].Value = "";
                 worksheet.Cells[i, 6].Value = reports[n].AMOUNT.ToString().Trim();
 
+                reports[n].Commission = (reports[n].AMOUNT * 0.01);
+
                 if (reports[n].Commission >= 0.75)
                 { 
                     reports[n].Commission = 0.75; 
@@ -477,7 +479,7 @@ namespace BatelcoReport
 
                 else
                 { 
-                    reports[n].Commission = (reports[n].AMOUNT * 0.01); 
+                    
                     worksheet.Cells[i, 7].Value = reports[n].Commission.ToString().Trim(); 
                 }
 
@@ -508,6 +510,7 @@ namespace BatelcoReport
                 worksheet.Cells[i, 4].Value = BillsReports[n].PAYMENTDATE.ToString("dd/MM/yyyy HH: mm:ss").Trim();
                 worksheet.Cells[i, 5].Value = "";
                 worksheet.Cells[i, 6].Value = BillsReports[n].PRODUCTAMOUNT.ToString().Trim();
+
 
                 if (BillsReports[n].Commission >= 0.750)
                 {

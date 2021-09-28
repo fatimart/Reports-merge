@@ -53,9 +53,11 @@ namespace BatelcoReport
             if (CombineWorkSheet())
             {
                 ReadAll();
-                Excel();
             }
+
             
+
+
         }
 
 
@@ -69,17 +71,10 @@ namespace BatelcoReport
             if (fdlg.ShowDialog() == true)
             {
 
-                if (System.IO.Path.GetFileName(fdlg.FileName) == "bills.csv")
-                {
 
-                    billsFiletxt.Text = fdlg.FileName;
 
-                }
-                else
-                {
-                    MessageBox.Show("You Are Allowed to add bills.csv file only");
+                billsFiletxt.Text = fdlg.FileName;
 
-                }
             }
         }
 
@@ -93,17 +88,11 @@ namespace BatelcoReport
             if (fdlg.ShowDialog() == true)
             {
 
-                if (System.IO.Path.GetFileName(fdlg.FileName) == "kiosk.xlsx")
-                {
+              
 
                     kioskFiletxt.Text = fdlg.FileName;
 
-                }
-                else
-                {
-                    MessageBox.Show("You Are Allowed to add kiosk.xlsx file only");
-
-                }
+                
             }
         }
 
@@ -117,17 +106,11 @@ namespace BatelcoReport
             if (fdlg.ShowDialog() == true)
             {
 
-                if (System.IO.Path.GetFileName(fdlg.FileName) == "mpos.CSV")
-                {
+               
 
                     mPOSfileTxt.Text = fdlg.FileName;
 
-                }
-                else
-                {
-                    MessageBox.Show("You Are Allowed to add mpos.CSV file only");
-
-                }
+                
             }
         }
 
@@ -182,13 +165,13 @@ namespace BatelcoReport
 
                 else
                 {
-                   MessageBox.Show("Please select 3 files with names bills, kiosk and mpos Batelco SIM");
+                   MessageBox.Show("Please select 3 files");
                     return false;
                 }
 
         }
 
-        public void read1 ()
+        public bool read1 ()
         {
             string CombineFile = "CombinedFile1.xlsx";
             string commandText = "SELECT * FROM [Sheet1$]";
@@ -241,18 +224,19 @@ namespace BatelcoReport
                 
 
                 connection.Close();
-
+                return true;
             }
 
             catch (Exception ex)
             {
-                MessageBox.Show("" + ex.Message);
+                MessageBox.Show("ERROR in file 1: Please Select valid file");
                 connection.Close();
+                return false;
             }
 
 
         }
-        public void read2 ()
+        public bool read2 ()
         {
             string CombineFile = "CombinedFile1.xlsx";
             string commandText = "SELECT * FROM [Sheet2$]";
@@ -304,16 +288,20 @@ namespace BatelcoReport
                 }
 
                 connection.Close();
+                return true;
 
             }
 
             catch (Exception ex)
             {
-                //MessageBox.Show("" + ex.Message);
+                MessageBox.Show("ERROR in file 2: Please Select valid file");
                 connection.Close();
+                return false;
+
             }
         }
-        public void read3 ()
+
+        public bool read3 ()
         {
             string CombineFile = "CombinedFile1.xlsx";
             string commandText = "SELECT * FROM [Sheet3$]";
@@ -367,21 +355,31 @@ namespace BatelcoReport
 
 
                 connection.Close();
+                return true;
 
             }
 
             catch (Exception ex)
             {
-                MessageBox.Show("" + ex.Message);
+                MessageBox.Show("ERROR in file 3: Please Select valid file");
                 connection.Close();
+                return false;
+
             }
         }
        
-        public void ReadAll ()
+        public bool ReadAll ()
         {
-            read1();
-            read2();
-            read3();
+            if (read1() && read2() && read3())
+            {
+                Excel();
+                return true;
+            }
+            else
+            {
+                //MessageBox.Show("ERROR in reading the files: Please Select valid files");
+                return false;
+            }
         }
 
 
@@ -469,20 +467,23 @@ namespace BatelcoReport
                 worksheet.Cells[i, 4].Value = reports[n].PAYMENTDATE.ToString("dd/MM/yyyy HH: mm:ss").Trim();
 
                 worksheet.Cells[i, 5].Value = "";
-                worksheet.Cells[i, 6].Value = (reports[n].AMOUNT).ToString().Trim();
-                if (reports[n].Commission >= 0.750)
-                {
-                    worksheet.Cells[i, 7].Value = (0.750).ToString().Trim();
-                }
-                else
-                {
-                    worksheet.Cells[i, 7].Value = (reports[n].AMOUNT * 0.01).ToString().Trim();
+                worksheet.Cells[i, 6].Value = reports[n].AMOUNT.ToString().Trim();
+
+                if (reports[n].Commission >= 0.75)
+                { 
+                    reports[n].Commission = 0.75; 
+                    worksheet.Cells[i, 7].Value = reports[n].Commission.ToString().Trim(); 
                 }
 
+                else
+                { 
+                    reports[n].Commission = (reports[n].AMOUNT * 0.01); 
+                    worksheet.Cells[i, 7].Value = reports[n].Commission.ToString().Trim(); 
+                }
 
                 worksheet.Cells[i, 8].Value = reports[n].VAT.ToString().Trim();
 
-                worksheet.Cells[i, 9].Value = (reports[n].AMOUNT - reports[n].Commission);
+                worksheet.Cells[i, 9].Value = (reports[n].AMOUNT - reports[n].Commission).ToString().Trim();
 
                 worksheet.Cells[i, 10].Value = "";
                 worksheet.Cells[i, 11].Value = reports[n].Service_Name.Trim();
@@ -508,14 +509,17 @@ namespace BatelcoReport
                 worksheet.Cells[i, 5].Value = "";
                 worksheet.Cells[i, 6].Value = BillsReports[n].PRODUCTAMOUNT.ToString().Trim();
 
-                if (reports[n].Commission >= 0.750)
+                if (BillsReports[n].Commission >= 0.750)
                 {
-                    worksheet.Cells[i, 7].Value = (0.750).ToString().Trim();
+                    BillsReports[n].Commission = 0.75;
+                    worksheet.Cells[i, 7].Value = BillsReports[n].Commission.ToString().Trim();
                 }
                 else
                 {
-                    worksheet.Cells[i, 7].Value = (BillsReports[n].PRODUCTAMOUNT * 0.01).ToString().Trim();
+                    BillsReports[n].Commission = (BillsReports[n].PRODUCTAMOUNT * 0.01);
+                    worksheet.Cells[i, 7].Value = BillsReports[n].Commission.ToString().Trim();
                 }
+
 
                 worksheet.Cells[i, 8].Value = BillsReports[n].VATAMOUNT.ToString().Trim();
 

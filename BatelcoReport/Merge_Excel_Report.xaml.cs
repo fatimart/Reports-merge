@@ -469,13 +469,20 @@ namespace BatelcoReport
                 worksheet.Cells[i, 4].Value = reports[n].PAYMENTDATE.ToString("dd/MM/yyyy HH: mm:ss").Trim();
 
                 worksheet.Cells[i, 5].Value = "";
-                worksheet.Cells[i, 6].Value = reports[n].AMOUNT.ToString().Trim();
+                worksheet.Cells[i, 6].Value = (reports[n].AMOUNT).ToString().Trim();
+                if (reports[n].Commission >= 0.750)
+                {
+                    worksheet.Cells[i, 7].Value = (0.750).ToString().Trim();
+                }
+                else
+                {
+                    worksheet.Cells[i, 7].Value = (reports[n].AMOUNT * 0.01).ToString().Trim();
+                }
 
-                worksheet.Cells[i, 7].Value = reports[n].Commission.ToString().Trim();
 
                 worksheet.Cells[i, 8].Value = reports[n].VAT.ToString().Trim();
 
-                worksheet.Cells[i, 9].Value = (reports[n].AMOUNT - reports[n].Commission - reports[n].VAT);
+                worksheet.Cells[i, 9].Value = (reports[n].AMOUNT - reports[n].Commission);
 
                 worksheet.Cells[i, 10].Value = "";
                 worksheet.Cells[i, 11].Value = reports[n].Service_Name.Trim();
@@ -500,9 +507,20 @@ namespace BatelcoReport
                 worksheet.Cells[i, 4].Value = BillsReports[n].PAYMENTDATE.ToString("dd/MM/yyyy HH: mm:ss").Trim();
                 worksheet.Cells[i, 5].Value = "";
                 worksheet.Cells[i, 6].Value = BillsReports[n].PRODUCTAMOUNT.ToString().Trim();
-                worksheet.Cells[i, 7].Value = BillsReports[n].Commission.ToString().Trim();
+
+                if (reports[n].Commission >= 0.750)
+                {
+                    worksheet.Cells[i, 7].Value = (0.750).ToString().Trim();
+                }
+                else
+                {
+                    worksheet.Cells[i, 7].Value = (BillsReports[n].PRODUCTAMOUNT * 0.01).ToString().Trim();
+                }
+
                 worksheet.Cells[i, 8].Value = BillsReports[n].VATAMOUNT.ToString().Trim();
-                worksheet.Cells[i, 9].Value = (BillsReports[n].PRODUCTAMOUNT - BillsReports[n].Commission - BillsReports[n].VATAMOUNT).ToString().Trim();
+
+
+                worksheet.Cells[i, 9].Value = (BillsReports[n].PRODUCTAMOUNT - BillsReports[n].Commission).ToString().Trim();
                 worksheet.Cells[i, 10].Value = BillsReports[n].KIOSKID.ToString().Trim();
                 worksheet.Cells[i, 11].Value = BillsReports[n].PRODUCTNAME.Trim();
                 worksheet.Cells[i, 12].Value = BillsReports[n].ORDERNUMBER.Trim();
@@ -511,6 +529,7 @@ namespace BatelcoReport
 
 
             }
+
             //int C1 = j + BillsReports.Count -2 ;
             //worksheet.get_Range("A" + (j - 1) + "", "N" + (j - 1) + "").HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
             //worksheet.get_Range("A" + (j - 1) + "", "N" + (j - 1) + "").VerticalAlignment = Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignCenter;

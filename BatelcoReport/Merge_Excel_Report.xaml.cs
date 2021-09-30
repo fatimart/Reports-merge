@@ -321,8 +321,11 @@ namespace BatelcoReport
 
                     if (reader["Transaction Status"].ToString().Trim() == "Success" && reader["Service Provider"].ToString().Trim() == "Batelco"  && reader["Service Name"].ToString().Trim() == "Batelco Postpaid")
                     {
-                        
-                        double refg = Convert.ToDouble(reader["YQ Transactio ID"]);
+
+                        double amount;
+                        double.TryParse(reader["YQ Transactio ID"].ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out amount);
+                        string stringRepresentationOfDoubleValue = amount.ToString("###");
+                       // double refg = Convert.ToDouble(reader["YQ Transactio ID"]);
 
                         reports.Add(new Report
                         {
@@ -342,7 +345,7 @@ namespace BatelcoReport
 
                             Service_Name = reader["Channel Name"].ToString(),
 
-                            REFERENCE_NO = reader["YQ Transactio ID"].ToString(),
+                            REFERENCE_NO = stringRepresentationOfDoubleValue,
 
                             PAYMENTLOCATION = "YQB",
 

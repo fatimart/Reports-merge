@@ -188,10 +188,9 @@ namespace BatelcoReport
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    if (reader["Transaction Status "].ToString().Trim() == "SUCCESS" &&  reader["Operation Type "].ToString().Trim() == "BILL_PAYMENT")
+                    if (reader["Transaction Status "].ToString().Trim() == "SUCCESS" &&  reader["Operation Type "].ToString().Trim() == "BILL_PAYMENT"&& (reader["Service Name "].ToString().Trim() == "BATELCO" || reader["Service Name "].ToString().Trim() == "Batelco"))
                     {
-                        if (reader["Service Name "].ToString().Trim() == "BATELCO" || reader["Service Name "].ToString().Trim() == "Batelco")
-                        {
+                       
                             string PaymentDate = reader["Transaction Date "].ToString().Trim() + " " + reader["Transaction Time "].ToString().Trim();
 
                             reports.Add(new Report
@@ -217,7 +216,7 @@ namespace BatelcoReport
 
                                 Transaction_Status = reader["Transaction Status "].ToString().Trim(),
                             });
-                        }
+                        
                     }
 
                 }
@@ -229,7 +228,7 @@ namespace BatelcoReport
 
             catch (Exception ex)
             {
-                MessageBox.Show("ERROR in file 1: Please Select valid kiosk file");
+                MessageBox.Show("ERROR in file 1: Please Select valid Bills file"+ex);
                 connection.Close();
                 return false;
             }
@@ -255,12 +254,12 @@ namespace BatelcoReport
                 {
 
 
-                    if (reader["BT Res"].ToString().Trim() == "Success" && reader["Service Name"].ToString().Trim() == "Batelco Postpaid") 
+                   if (reader["BT Res"].ToString().Trim() == "Success" && reader["Service Name"].ToString().Trim() == "Batelco Postpaid") 
                     {
 
                         reports.Add(new Report
                         {
-                            ACCOUNT_NUMBER = (reader["Phone Number"]).ToString().Trim(),
+                            ACCOUNT_NUMBER = reader["Phone Number"].ToString().Trim(),
                             CUSTOMER_NAME = default,
                             TRANSACTION_NUMBER = reader["Batelco Transaction ID"].ToString().Trim(),
 
@@ -294,7 +293,7 @@ namespace BatelcoReport
 
             catch (Exception ex)
             {
-                MessageBox.Show("ERROR in file 2: Please Select a valid bills file");
+                MessageBox.Show("ERROR in file 2: Please Select a valid Kiosk file"+ex);
                 connection.Close();
                 return false;
 
@@ -478,8 +477,7 @@ namespace BatelcoReport
                 }
 
                 else
-                { 
-                    
+                {
                     worksheet.Cells[i, 7].Value = reports[n].Commission.ToString().Trim(); 
                 }
 

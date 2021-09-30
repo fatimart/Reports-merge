@@ -511,6 +511,7 @@ namespace BatelcoReport
                 worksheet.Cells[i, 5].Value = "";
                 worksheet.Cells[i, 6].Value = BillsReports[n].PRODUCTAMOUNT.ToString().Trim();
 
+                BillsReports[n].Commission = (BillsReports[n].PRODUCTAMOUNT * 0.01);
 
                 if (BillsReports[n].Commission >= 0.750)
                 {
@@ -519,7 +520,6 @@ namespace BatelcoReport
                 }
                 else
                 {
-                    BillsReports[n].Commission = (BillsReports[n].PRODUCTAMOUNT * 0.01);
                     worksheet.Cells[i, 7].Value = BillsReports[n].Commission.ToString().Trim();
                 }
 

@@ -30,6 +30,7 @@ namespace BatelcoReport
         public Merge_Excel_Report ()
         {
             InitializeComponent();
+
         }
 
         private void btnSelectFile_Click ( object sender, RoutedEventArgs e )
@@ -172,7 +173,7 @@ namespace BatelcoReport
         }
 
         public bool read1 ()
-        {
+        {//bills
             string CombineFile = "CombinedFile1.xlsx";
             string commandText = "SELECT * FROM [Sheet1$]";
             string oledbConnectString = "Provider=Microsoft.ACE.OLEDB.12.0;" +
@@ -236,7 +237,7 @@ namespace BatelcoReport
 
         }
         public bool read2 ()
-        {
+        {//kiosk
             string CombineFile = "CombinedFile1.xlsx";
             string commandText = "SELECT * FROM [Sheet2$]";
             string oledbConnectString = "Provider=Microsoft.ACE.OLEDB.12.0;" +
@@ -325,15 +326,43 @@ namespace BatelcoReport
                         double amount;
                         double.TryParse(reader["YQ Transactio ID"].ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out amount);
                         string stringRepresentationOfDoubleValue = amount.ToString("###");
-                       // double refg = Convert.ToDouble(reader["YQ Transactio ID"]);
+                        // double refg = Convert.ToDouble(reader["YQ Transactio ID"]);
+                        // string dateChange = reader["Date of Payment Recieved"].ToString();
+                        string outputTime = reader["Date of Payment Recieved"].ToString().Trim();
+                        string dateChange = reader["Date of Payment Recieved"].ToString().Trim();
+                        string timeFormat = dateChange.Substring(dateChange.Length - 2);
+                        if (timeFormat.Equals("AM")|| timeFormat.Equals("am")
+                            || timeFormat.Equals("PM")|| timeFormat.Equals("pm"))
+                        {
+                            switch (timeFormat)
+                            {
+                                case ("AM"):
+                                    outputTime = dateChange.Replace("AM", "");
+                                    break;
+                                case ("am"):
+                                    outputTime = dateChange.Replace("am", "");
+                                    break;
+                                case ("PM"):
+                                    outputTime = dateChange.Replace("PM", "");
+                                    break;
+                                case ("pm"):
+                                    outputTime = dateChange.Replace("pm", "");
+                                    break;
+                            }
+                        }
+                      //  String.Format("dd/MM/yyyy HH:mm:ss", dateChange);
+                       // DateTime dateEdit = Convert.ToDateTime(dateChange);
+                       // string.Format("dd/MM/yyyy HH:mm:ss", dateEdit);
 
+                      // dateEdit.ToString("dd/MM/yyyy HH:mm:ss");
+                      //  MessageBox.Show(dateEdit.ToString());
                         reports.Add(new Report
                         {
                             ACCOUNT_NUMBER = reader["Circuit Number"].ToString(),
                             CUSTOMER_NAME = default,
                             TRANSACTION_NUMBER = reader["Batelco Transaction ID"].ToString(),
 
-                            PAYMENTDATE = Convert.ToDateTime(reader["Date of Payment Recieved"]),
+                            PAYMENTDATE = Convert.ToDateTime(outputTime),
 
                             Date_of_payment_execution = default,
                             AMOUNT = Convert.ToDouble(reader["Trx Amount"]),
@@ -363,7 +392,7 @@ namespace BatelcoReport
 
             catch (Exception ex)
             {
-                MessageBox.Show("ERROR in file 3: Please Select a valid mPOS file");
+                MessageBox.Show("ERROR in file 3: Please Select a valid mPOS file"+ex);
                 connection.Close();
                 return false;
 
@@ -372,7 +401,7 @@ namespace BatelcoReport
        
         public bool ReadAll ()
         {
-            if (read1() && read2() && read3())
+            if ( read1() && read2() &&read3())
             {
                 Excel();
                 return true;
@@ -401,7 +430,7 @@ namespace BatelcoReport
             Microsoft.Office.Interop.Excel.Worksheet worksheet = excelApp.ActiveSheet;
             worksheet.Name = "YQ";
             excelApp.ActiveWindow.DisplayGridlines = false;
-            int c = reports.Count - 2;
+            int c = reports.Count +1;
 
 
 
@@ -459,14 +488,14 @@ namespace BatelcoReport
 
 
 
-            for (int i = 2, n = 0; i < reports.Count - 1; i++, n++)
+            for (int k = 0, n = 0; k <= reports.Count - 1; k++, n++)
             {
-
+                int i = k + 2;
 
                 worksheet.Cells[i, 1].Value = "973" + reports[n].ACCOUNT_NUMBER.Trim();
                 worksheet.Cells[i, 2].Value = "";
                 worksheet.Cells[i, 3].Value = reports[n].TRANSACTION_NUMBER.ToString().Trim();
-                worksheet.Cells[i, 4].Value = reports[n].PAYMENTDATE.ToString("dd/MM/yyyy HH: mm:ss").Trim();
+                worksheet.Cells[i, 4].Value = reports[n].PAYMENTDATE.ToString("dd/MM/yyyy HH:mm:ss").Trim();
 
                 worksheet.Cells[i, 5].Value = "";
                 worksheet.Cells[i, 6].Value = reports[n].AMOUNT.ToString().Trim();
@@ -508,7 +537,7 @@ namespace BatelcoReport
                 worksheet.Cells[i, 1].Value = "973" + BillsReports[n].ACCOUNT_NUMBER.Trim();
                 worksheet.Cells[i, 2].Value = BillsReports[n].CUSTOMER_NAME.Trim();
                 worksheet.Cells[i, 3].Value = BillsReports[n].TRANSACTION_NUMBER.ToString().Trim();
-                worksheet.Cells[i, 4].Value = BillsReports[n].PAYMENTDATE.ToString("dd/MM/yyyy HH: mm:ss").Trim();
+                worksheet.Cells[i, 4].Value = BillsReports[n].PAYMENTDATE.ToString("dd/MM/yyyy HH:mm:ss").Trim();
                 worksheet.Cells[i, 5].Value = "";
                 worksheet.Cells[i, 6].Value = BillsReports[n].PRODUCTAMOUNT.ToString().Trim();
 

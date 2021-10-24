@@ -468,6 +468,10 @@ namespace BatelcoReport
             worksheet.Cells[1, 14] = "Transaction_Status";
 
             worksheet.get_Range("A2", "N" + c + "").NumberFormat = "@";
+            worksheet.get_Range("F2", "F" + c + "").NumberFormat = "#,##0.000";
+            worksheet.get_Range("G2", "G" + c + "").NumberFormat = "#,##0.000";
+            worksheet.get_Range("H2", "H" + c + "").NumberFormat = "#,##0.000";
+            worksheet.get_Range("I2", "I" + c + "").NumberFormat = "#,##0.000";
 
 
             worksheet.get_Range("A1:N1").Font.Bold = true;
@@ -502,20 +506,29 @@ namespace BatelcoReport
 
                 reports[n].Commission = (reports[n].AMOUNT * 0.01);
 
+                decimal rounded_com;
                 if (reports[n].Commission >= 0.75)
                 { 
-                    reports[n].Commission = 0.75; 
-                    worksheet.Cells[i, 7].Value = reports[n].Commission.ToString().Trim(); 
+                    reports[n].Commission = 0.75;
+
+                    rounded_com = Math.Round(Convert.ToDecimal(reports[n].Commission), 3);
+                    worksheet.Cells[i, 7].Value = (rounded_com).ToString().Trim(); 
                 }
 
                 else
                 {
-                    worksheet.Cells[i, 7].Value = reports[n].Commission.ToString().Trim(); 
+                    rounded_com = Math.Round(Convert.ToDecimal(reports[n].Commission), 3);
+                    worksheet.Cells[i, 7].Value = (rounded_com).ToString().Trim();
+
+                    //worksheet.Cells[i, 7].Value = reports[n].Commission.ToString().Trim(); 
                 }
 
-                worksheet.Cells[i, 8].Value = reports[n].VAT.ToString().Trim();
 
-                worksheet.Cells[i, 9].Value = (reports[n].AMOUNT - reports[n].Commission).ToString().Trim();
+                reports[n].VAT = (0.05 * reports[n].Commission);
+                decimal rounded_3 = Math.Round(Convert.ToDecimal(reports[n].VAT), 3);
+                worksheet.Cells[i, 8].Value = rounded_3.ToString().Trim();
+
+                worksheet.Cells[i, 9].Value = (reports[n].AMOUNT - Convert.ToDouble(rounded_com) - Convert.ToDouble(rounded_3)).ToString().Trim();
 
                 worksheet.Cells[i, 10].Value = "";
                 worksheet.Cells[i, 11].Value = reports[n].Service_Name.Trim();

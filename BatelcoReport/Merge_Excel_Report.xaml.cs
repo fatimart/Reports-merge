@@ -512,13 +512,15 @@ namespace BatelcoReport
                     reports[n].Commission = 0.75;
 
                     rounded_com = Math.Round(Convert.ToDecimal(reports[n].Commission), 3);
-                    worksheet.Cells[i, 7].Value = (rounded_com).ToString().Trim(); 
+                    worksheet.Cells[i, 7].Value = (rounded_com).ToString().Trim();
+                    reports[n].Commission = Convert.ToDouble(rounded_com);
                 }
 
                 else
                 {
                     rounded_com = Math.Round(Convert.ToDecimal(reports[n].Commission), 3);
                     worksheet.Cells[i, 7].Value = (rounded_com).ToString().Trim();
+                    reports[n].Commission = Convert.ToDouble(rounded_com);
 
                     //worksheet.Cells[i, 7].Value = reports[n].Commission.ToString().Trim(); 
                 }
@@ -526,6 +528,7 @@ namespace BatelcoReport
 
                 reports[n].VAT = (0.05 * reports[n].Commission);
                 decimal rounded_3 = Math.Round(Convert.ToDecimal(reports[n].VAT), 3);
+             
                 worksheet.Cells[i, 8].Value = rounded_3.ToString().Trim();
 
                 worksheet.Cells[i, 9].Value = (reports[n].AMOUNT - Convert.ToDouble(rounded_com) - Convert.ToDouble(rounded_3)).ToString().Trim();

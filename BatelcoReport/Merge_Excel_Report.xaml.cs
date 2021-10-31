@@ -229,7 +229,7 @@ namespace BatelcoReport
 
             catch (Exception ex)
             {
-                MessageBox.Show("ERROR in file 1: Please Select valid Bills file"+ex);
+                MessageBox.Show("ERROR in file 1: Please Select valid Bills file");
                 connection.Close();
                 return false;
             }
@@ -294,7 +294,7 @@ namespace BatelcoReport
 
             catch (Exception ex)
             {
-                MessageBox.Show("ERROR in file 2: Please Select a valid Kiosk file"+ex);
+                MessageBox.Show("ERROR in file 2: Please Select a valid Kiosk file");
                 connection.Close();
                 return false;
 
@@ -318,7 +318,6 @@ namespace BatelcoReport
 
                 while (reader.Read())
                 {
-                    
 
                     if (reader["Transaction Status"].ToString().Trim() == "Success" && reader["Service Provider"].ToString().Trim() == "Batelco"  && reader["Service Name"].ToString().Trim() == "Batelco Postpaid")
                     {
@@ -392,7 +391,7 @@ namespace BatelcoReport
 
             catch (Exception ex)
             {
-                MessageBox.Show("ERROR in file 3: Please Select a valid mPOS file"+ex);
+                MessageBox.Show("ERROR in file 3: Please Select a valid mPOS file");
                 connection.Close();
                 return false;
 

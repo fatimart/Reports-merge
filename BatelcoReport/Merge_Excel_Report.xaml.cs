@@ -325,6 +325,11 @@ namespace BatelcoReport
                         double amount;
                         double.TryParse(reader["YQ Transactio ID"].ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out amount);
                         string stringRepresentationOfDoubleValue = amount.ToString("###");
+
+                        string transactionId = reader["YQ Transactio ID"].ToString();
+                        string refNO;
+                        if (stringRepresentationOfDoubleValue == "") { refNO = transactionId; }
+                        else { refNO = stringRepresentationOfDoubleValue; }
                         // double refg = Convert.ToDouble(reader["YQ Transactio ID"]);
                         // string dateChange = reader["Date of Payment Recieved"].ToString();
                         string outputTime = reader["Date of Payment Recieved"].ToString().Trim();
@@ -355,6 +360,8 @@ namespace BatelcoReport
 
                       // dateEdit.ToString("dd/MM/yyyy HH:mm:ss");
                       //  MessageBox.Show(dateEdit.ToString());
+
+                        
                         reports.Add(new Report
                         {
                             ACCOUNT_NUMBER = reader["Circuit Number"].ToString(),
@@ -373,7 +380,8 @@ namespace BatelcoReport
 
                             Service_Name = reader["Channel Name"].ToString(),
 
-                            REFERENCE_NO = stringRepresentationOfDoubleValue,
+
+                            REFERENCE_NO = refNO,
 
                             PAYMENTLOCATION = "YQB",
 

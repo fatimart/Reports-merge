@@ -459,20 +459,20 @@ namespace BatelcoReport
             worksheet.Range["N1"].ColumnWidth = 16.57;
 
             //style and element
-            worksheet.Cells[1, 1] = "ACCOUNT NUMBER";
-            worksheet.Cells[1, 2] = "CUSTOMER NAME";
-            worksheet.Cells[1, 3] = "TRANSACTION NUMBER";
-            worksheet.Cells[1, 4] = "PAYMENTDATE";
+            worksheet.Cells[1, 1] = "ACCOUNT_NUMBER";
+            worksheet.Cells[1, 2] = "CUSTOMER_NAME";
+            worksheet.Cells[1, 3] = "TRANSACTION_NUMBER";
+            worksheet.Cells[1, 4] = "Transaction Date";
             worksheet.Cells[1, 5] = "Date of payment execution";
             worksheet.Cells[1, 6] = "AMOUNT";
             worksheet.Cells[1, 7] = "Commission";
             worksheet.Cells[1, 8] = "VAT";
-            worksheet.Cells[1, 9] = "Net_Amount";
+            worksheet.Cells[1, 9] = "Net Amount";
             worksheet.Cells[1, 10] = "AUTHRIZATION_NO";
-            worksheet.Cells[1, 11] = "Service_Name";
+            worksheet.Cells[1, 11] = "Service Name";
             worksheet.Cells[1, 12] = "REFERENCE_NO";
-            worksheet.Cells[1, 13] = "PAYMENTLOCATION";
-            worksheet.Cells[1, 14] = "Transaction_Status";
+            worksheet.Cells[1, 13] = "Payment Type/Channel Name";
+            worksheet.Cells[1, 14] = "Transaction Status";
 
             worksheet.get_Range("A2", "N" + c + "").NumberFormat = "@";
             worksheet.get_Range("F2", "F" + c + "").NumberFormat = "#,##0.000";

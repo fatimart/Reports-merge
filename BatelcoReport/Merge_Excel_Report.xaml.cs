@@ -189,20 +189,20 @@ namespace BatelcoReport
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    if (reader["Transaction Status "].ToString().Trim() == "SUCCESS" &&  reader["Operation Type "].ToString().Trim() == "BILL_PAYMENT"&& (reader["Service Name "].ToString().Trim() == "BATELCO" || reader["Service Name "].ToString().Trim() == "Batelco"))
+                    if (reader["Transaction Status "].ToString().Trim() == "SUCCESS" && reader["Operation Status "].ToString().Trim() == "COMPLETED" &&  reader["Operation Type "].ToString().Trim() == "BILL_PAYMENT"&& (reader["Service Name "].ToString().Trim() == "BATELCO" || reader["Service Name "].ToString().Trim() == "Batelco"))
                     {
                        
                             string PaymentDate = reader["Transaction Date "].ToString().Trim() + " " + reader["Transaction Time "].ToString().Trim();
 
                             reports.Add(new Report
                             {
-                                ACCOUNT_NUMBER = reader["Customer Phone Number "].ToString(),
+                                ACCOUNT_NUMBER = reader["Bill Phone Number "].ToString(),
                                 CUSTOMER_NAME = default,
                                 TRANSACTION_NUMBER = reader["Reference Number Provider "].ToString(),
 
                                 PAYMENTDATE = Convert.ToDateTime(PaymentDate),
                                 Date_of_payment_execution = default,
-                                AMOUNT = Convert.ToDouble(reader["Transaction Amount "]),
+                                AMOUNT = Convert.ToDouble(reader["Operation Amount "]),
 
                                 Commission = default,
                                 VAT = default,
@@ -254,35 +254,36 @@ namespace BatelcoReport
                 while (reader.Read())
                 {
 
-
-                   if (reader["BT Res"].ToString().Trim() == "Success" && reader["Service Name"].ToString().Trim() == "Batelco Postpaid") 
-                    {
-
-                        reports.Add(new Report
+                    
+                        if ((reader["BT Res"].ToString().Trim() == "Success" || reader["BT Res"].ToString().Trim() == "Authorization Success") && reader["Service Name"].ToString().Trim() == "Batelco Postpaid")
                         {
-                            ACCOUNT_NUMBER = reader["Phone Number"].ToString().Trim(),
-                            CUSTOMER_NAME = default,
-                            TRANSACTION_NUMBER = reader["Batelco Transaction ID"].ToString().Trim(),
 
-                            PAYMENTDATE = Convert.ToDateTime(reader["Dateof Payment Received"]),
+                            reports.Add(new Report
+                            {
+                                ACCOUNT_NUMBER = reader["Phone Number"].ToString().Trim(),
+                                CUSTOMER_NAME = default,
+                                TRANSACTION_NUMBER = reader["Batelco Transaction ID"].ToString().Trim(),
 
-                            Date_of_payment_execution = default,
-                            AMOUNT = Convert.ToDouble(reader["Trx Amount"]),
+                                PAYMENTDATE = Convert.ToDateTime(reader["Dateof Payment Received"]),
 
-                            Commission = Convert.ToDouble(reader["Commission"]),
-                            VAT = default,
-                            Net_Amount = Convert.ToDouble(reader["Net Amount"]),
-                            AUTHRIZATION_NO = Convert.ToInt32(reader["Terminal ID"]),
+                                Date_of_payment_execution = default,
+                                AMOUNT = Convert.ToDouble(reader["Trx Amount"]),
 
-                            Service_Name = reader["Channel Name"].ToString().Trim(),
+                                Commission = Convert.ToDouble(reader["Commission"]),
+                                VAT = default,
+                                Net_Amount = Convert.ToDouble(reader["Net Amount"]),
+                                AUTHRIZATION_NO = Convert.ToInt32(reader["Terminal ID"]),
 
-                            REFERENCE_NO = reader["Transaction Refence No"].ToString().Trim(),
+                                Service_Name = reader["Channel Name"].ToString().Trim(),
 
-                            PAYMENTLOCATION = "YQB",
+                                REFERENCE_NO = reader["Transaction Refence No"].ToString().Trim(),
 
-                            Transaction_Status = reader["BT Res"].ToString().Trim(),
-                        });
-                    }
+                                PAYMENTLOCATION = "YQB",
+
+                                Transaction_Status = reader["BT Res"].ToString().Trim(),
+                            });
+                        }
+                    
                    
 
                 }

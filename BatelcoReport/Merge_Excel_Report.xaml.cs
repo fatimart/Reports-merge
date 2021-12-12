@@ -206,7 +206,7 @@ namespace BatelcoReport
 
                                 Commission = default,
                                 VAT = default,
-                                Net_Amount = Convert.ToDouble(reader["Transaction Amount "]),
+                                Net_Amount = Convert.ToDouble(reader["Operation Amount "]),
                                 AUTHRIZATION_NO = default,
 
                                 Service_Name = "TAM",

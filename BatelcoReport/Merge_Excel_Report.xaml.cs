@@ -443,7 +443,7 @@ namespace BatelcoReport
             Microsoft.Office.Interop.Excel.Worksheet worksheet = excelApp.ActiveSheet;
             worksheet.Name = "YQ";
             excelApp.ActiveWindow.DisplayGridlines = false;
-            int c = reports.Count +1 + MposReport.Count;
+            int c = reports.Count + MposReport.Count;
 
 
 
@@ -559,7 +559,7 @@ namespace BatelcoReport
 
 
 
-            int j = reports.Count  +3;
+            int j = reports.Count  +2;
 
             for (int i = j, n = 0; n < MposReport.Count - 1; n++, i++)
             {

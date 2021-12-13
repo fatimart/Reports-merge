@@ -25,6 +25,8 @@ namespace BatelcoReport
         public ObservableCollection<SIMReport> BillsReports { get; } = new ObservableCollection<SIMReport>();
         public ObservableCollection<BillReport> TAMReports { get; } = new ObservableCollection<BillReport>();
 
+        public ObservableCollection<MposReport> MposReport { get; } = new ObservableCollection<MposReport>();
+
         public ObservableCollection<strs> str { get; } = new ObservableCollection<strs>();
 
         public Merge_Excel_Report ()
@@ -193,8 +195,8 @@ namespace BatelcoReport
                     {
                        
                             string PaymentDate = reader["Transaction Date "].ToString().Trim() + " " + reader["Transaction Time "].ToString().Trim();
-
-                            reports.Add(new Report
+               
+                        reports.Add(new Report
                             {
                                 ACCOUNT_NUMBER = reader["Bill Phone Number "].ToString(),
                                 CUSTOMER_NAME = default,
@@ -258,7 +260,8 @@ namespace BatelcoReport
                         if ((reader["BT Res"].ToString().Trim() == "Success" || reader["BT Res"].ToString().Trim() == "Authorization Success") && reader["Service Name"].ToString().Trim() == "Batelco Postpaid")
                         {
 
-                            reports.Add(new Report
+                       
+                        reports.Add(new Report
                             {
                                 ACCOUNT_NUMBER = reader["Phone Number"].ToString().Trim(),
                                 CUSTOMER_NAME = default,
@@ -355,23 +358,25 @@ namespace BatelcoReport
                                     break;
                             }
                         }
-                      //  String.Format("dd/MM/yyyy HH:mm:ss", dateChange);
-                       // DateTime dateEdit = Convert.ToDateTime(dateChange);
-                       // string.Format("dd/MM/yyyy HH:mm:ss", dateEdit);
+                        //  String.Format("dd/MM/yyyy HH:mm:ss", dateChange);
+                        // DateTime dateEdit = Convert.ToDateTime(dateChange);
+                        // string.Format("dd/MM/yyyy HH:mm:ss", dateEdit);
 
-                      // dateEdit.ToString("dd/MM/yyyy HH:mm:ss");
-                      //  MessageBox.Show(dateEdit.ToString());
+                        // dateEdit.ToString("dd/MM/yyyy HH:mm:ss");
+                        //  MessageBox.Show(dateEdit.ToString());
 
-                        
-                        reports.Add(new Report
+                        DateTime dt = Convert.ToDateTime(outputTime);
+
+                        MposReport.Add(new MposReport
                         {
                             ACCOUNT_NUMBER = reader["Circuit Number"].ToString(),
                             CUSTOMER_NAME = default,
                             TRANSACTION_NUMBER = reader["Batelco Transaction ID"].ToString(),
 
-                            PAYMENTDATE = Convert.ToDateTime(outputTime),
+                           PAYMENTDATE = Convert.ToDateTime(outputTime),
+                           //PAYMENTDATE = dt,
 
-                            Date_of_payment_execution = default,
+                           Date_of_payment_execution = default,
                             AMOUNT = Convert.ToDouble(reader["Trx Amount"]),
 
                             Commission = Convert.ToDouble(reader["Commission"]),
@@ -438,7 +443,7 @@ namespace BatelcoReport
             Microsoft.Office.Interop.Excel.Worksheet worksheet = excelApp.ActiveSheet;
             worksheet.Name = "YQ";
             excelApp.ActiveWindow.DisplayGridlines = false;
-            int c = reports.Count +1;
+            int c = reports.Count +1 + MposReport.Count;
 
 
 
@@ -507,7 +512,8 @@ namespace BatelcoReport
                 worksheet.Cells[i, 1].Value = "973" + reports[n].ACCOUNT_NUMBER.Trim();
                 worksheet.Cells[i, 2].Value = "";
                 worksheet.Cells[i, 3].Value = reports[n].TRANSACTION_NUMBER.ToString().Trim();
-                worksheet.Cells[i, 4].Value = reports[n].PAYMENTDATE.ToString("dd/MM/yyyy HH:mm:ss").Trim();
+
+                worksheet.Cells[i, 4].Value = reports[n].PAYMENTDATE.ToString("dd/MM/yyyy hh:mm:ss").Trim();
 
                 worksheet.Cells[i, 5].Value = "";
                 worksheet.Cells[i, 6].Value = reports[n].AMOUNT.ToString().Trim();
@@ -553,43 +559,95 @@ namespace BatelcoReport
 
 
 
-            int j = reports.Count - 1;
+            int j = reports.Count  +3;
 
-
-            for (int i = j, n = 0; n < BillsReports.Count - 1; n++, i++)
+            for (int i = j, n = 0; n < MposReport.Count - 1; n++, i++)
             {
-                worksheet.Cells[i, 1].Value = "973" + BillsReports[n].ACCOUNT_NUMBER.Trim();
-                worksheet.Cells[i, 2].Value = BillsReports[n].CUSTOMER_NAME.Trim();
-                worksheet.Cells[i, 3].Value = BillsReports[n].TRANSACTION_NUMBER.ToString().Trim();
-                worksheet.Cells[i, 4].Value = BillsReports[n].PAYMENTDATE.ToString("dd/MM/yyyy HH:mm:ss").Trim();
+                worksheet.Cells[i, 1].Value = "973" + MposReport[n].ACCOUNT_NUMBER.Trim();
+                worksheet.Cells[i, 2].Value = "";
+                worksheet.Cells[i, 3].Value = MposReport[n].TRANSACTION_NUMBER.ToString().Trim();
+                worksheet.Cells[i, 4].NumberFormat = "dd/MM/yyyy hh:mm:ss";
+                worksheet.Cells[i, 4].Value = MposReport[n].PAYMENTDATE.ToString("dd/MM/yyyy hh:mm:ss").Trim();
+
                 worksheet.Cells[i, 5].Value = "";
-                worksheet.Cells[i, 6].Value = BillsReports[n].PRODUCTAMOUNT.ToString().Trim();
+                worksheet.Cells[i, 6].Value = MposReport[n].AMOUNT.ToString().Trim();
 
-                BillsReports[n].Commission = (BillsReports[n].PRODUCTAMOUNT * 0.01);
+                MposReport[n].Commission = (MposReport[n].AMOUNT * 0.01);
 
-                if (BillsReports[n].Commission >= 0.750)
+                decimal rounded_com;
+                if (MposReport[n].Commission >= 0.75)
                 {
-                    BillsReports[n].Commission = 0.75;
-                    worksheet.Cells[i, 7].Value = BillsReports[n].Commission.ToString().Trim();
+                    MposReport[n].Commission = 0.75;
+
+                    rounded_com = Math.Round(Convert.ToDecimal(MposReport[n].Commission), 3);
+                    worksheet.Cells[i, 7].Value = (rounded_com).ToString().Trim();
+                    MposReport[n].Commission = Convert.ToDouble(rounded_com);
                 }
+
                 else
                 {
-                    worksheet.Cells[i, 7].Value = BillsReports[n].Commission.ToString().Trim();
+                    rounded_com = Math.Round(Convert.ToDecimal(MposReport[n].Commission), 3);
+                    worksheet.Cells[i, 7].Value = (rounded_com).ToString().Trim();
+                    MposReport[n].Commission = Convert.ToDouble(rounded_com);
+
+                    //worksheet.Cells[i, 7].Value = reports[n].Commission.ToString().Trim(); 
                 }
 
 
-                worksheet.Cells[i, 8].Value = BillsReports[n].VATAMOUNT.ToString().Trim();
+                MposReport[n].VAT = (0.05 * MposReport[n].Commission);
+                decimal rounded_3 = Math.Round(Convert.ToDecimal(reports[n].VAT), 3);
 
+                worksheet.Cells[i, 8].Value = rounded_3.ToString().Trim();
 
-                worksheet.Cells[i, 9].Value = (BillsReports[n].PRODUCTAMOUNT - BillsReports[n].Commission).ToString().Trim();
-                worksheet.Cells[i, 10].Value = BillsReports[n].KIOSKID.ToString().Trim();
-                worksheet.Cells[i, 11].Value = BillsReports[n].PRODUCTNAME.Trim();
-                worksheet.Cells[i, 12].Value = BillsReports[n].ORDERNUMBER.Trim();
-                worksheet.Cells[i, 13].Value = BillsReports[n].PAYMENTLOCATION.Trim();
+                worksheet.Cells[i, 9].Value = (MposReport[n].AMOUNT - Convert.ToDouble(rounded_com) - Convert.ToDouble(rounded_3)).ToString().Trim();
+
+                worksheet.Cells[i, 10].Value = "";
+                worksheet.Cells[i, 11].Value = MposReport[n].Service_Name.Trim();
+                worksheet.Cells[i, 12].Value = MposReport[n].REFERENCE_NO.Trim();
+
+                worksheet.Cells[i, 13].Value = MposReport[n].PAYMENTLOCATION.Trim();
                 worksheet.Cells[i, 14].Value = "Success";
 
 
             }
+
+            //for (int i = j, n = 0; n < BillsReports.Count - 1; n++, i++)
+            //{
+            //    worksheet.Cells[i, 1].Value = "973" + BillsReports[n].ACCOUNT_NUMBER.Trim();
+            //    worksheet.Cells[i, 2].Value = BillsReports[n].CUSTOMER_NAME.Trim();
+            //    worksheet.Cells[i, 3].Value = BillsReports[n].TRANSACTION_NUMBER.ToString().Trim();
+
+            //    worksheet.Cells[i, 4].Value = BillsReports[n].PAYMENTDATE.ToString().Trim();
+            //    //worksheet.Cells[i, 4].Value = BillsReports[n].PAYMENTDATE.ToString("dd/MM/yyyy HH:mm:ss").Trim();
+
+            //    worksheet.Cells[i, 5].Value = "";
+            //    worksheet.Cells[i, 6].Value = BillsReports[n].PRODUCTAMOUNT.ToString().Trim();
+
+            //    BillsReports[n].Commission = (BillsReports[n].PRODUCTAMOUNT * 0.01);
+
+            //    if (BillsReports[n].Commission >= 0.750)
+            //    {
+            //        BillsReports[n].Commission = 0.75;
+            //        worksheet.Cells[i, 7].Value = BillsReports[n].Commission.ToString().Trim();
+            //    }
+            //    else
+            //    {
+            //        worksheet.Cells[i, 7].Value = BillsReports[n].Commission.ToString().Trim();
+            //    }
+
+
+            //    worksheet.Cells[i, 8].Value = BillsReports[n].VATAMOUNT.ToString().Trim();
+
+
+            //    worksheet.Cells[i, 9].Value = (BillsReports[n].PRODUCTAMOUNT - BillsReports[n].Commission).ToString().Trim();
+            //    worksheet.Cells[i, 10].Value = BillsReports[n].KIOSKID.ToString().Trim();
+            //    worksheet.Cells[i, 11].Value = BillsReports[n].PRODUCTNAME.Trim();
+            //    worksheet.Cells[i, 12].Value = BillsReports[n].ORDERNUMBER.Trim();
+            //    worksheet.Cells[i, 13].Value = BillsReports[n].PAYMENTLOCATION.Trim();
+            //    worksheet.Cells[i, 14].Value = "Success";
+
+
+            //}
 
             //int C1 = j + BillsReports.Count -2 ;
             //worksheet.get_Range("A" + (j - 1) + "", "N" + (j - 1) + "").HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;

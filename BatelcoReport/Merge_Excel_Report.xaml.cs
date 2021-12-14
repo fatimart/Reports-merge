@@ -326,16 +326,18 @@ namespace BatelcoReport
                     if (reader["Transaction Status"].ToString().Trim() == "Success" && reader["Service Provider"].ToString().Trim() == "Batelco"  && reader["Service Name"].ToString().Trim() == "Batelco Postpaid")
                     {
 
-                        double amount;
-                        double.TryParse(reader["YQ Transactio ID"].ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out amount);
-                        string stringRepresentationOfDoubleValue = amount.ToString("###");
-
-                        string transactionId = reader["YQ Transactio ID"].ToString();
-                        string refNO;
-                        if (stringRepresentationOfDoubleValue == "") { refNO = transactionId; }
-                        else { refNO = stringRepresentationOfDoubleValue; }
+                        //double amount;
+                        //double.TryParse(reader["YQ Transactio ID"].ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out amount);
+                        //string stringRepresentationOfDoubleValue = reader["YQ Transactio ID"].ToString();
+                        //if (stringRepresentationOfDoubleValue == "") { refNO = transactionId; }
+                        //else { refNO = stringRepresentationOfDoubleValue; }
                         // double refg = Convert.ToDouble(reader["YQ Transactio ID"]);
                         // string dateChange = reader["Date of Payment Recieved"].ToString();
+
+
+                        string transactionId = reader["YQ Transactio ID"].ToString();
+                        string refNO= reader["YQ Transactio ID"].ToString();
+                   
                         string outputTime = reader["Date of Payment Recieved"].ToString().Trim();
                         string dateChange = reader["Date of Payment Recieved"].ToString().Trim();
                         string timeFormat = dateChange.Substring(dateChange.Length - 2);
@@ -443,7 +445,7 @@ namespace BatelcoReport
             Microsoft.Office.Interop.Excel.Worksheet worksheet = excelApp.ActiveSheet;
             worksheet.Name = "YQ";
             excelApp.ActiveWindow.DisplayGridlines = false;
-            int c = reports.Count + MposReport.Count;
+            int c = reports.Count + MposReport.Count+1;
 
 
 
@@ -561,7 +563,7 @@ namespace BatelcoReport
 
             int j = reports.Count  +2;
 
-            for (int i = j, n = 0; n < MposReport.Count - 1; n++, i++)
+            for (int i = j, n = 0; n < MposReport.Count ; n++, i++)
             {
                 worksheet.Cells[i, 1].Value = "973" + MposReport[n].ACCOUNT_NUMBER.Trim();
                 worksheet.Cells[i, 2].Value = "";

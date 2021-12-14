@@ -595,7 +595,7 @@ namespace BatelcoReport
 
 
                 MposReport[n].VAT = (0.05 * MposReport[n].Commission);
-                decimal rounded_3 = Math.Round(Convert.ToDecimal(reports[n].VAT), 3);
+                decimal rounded_3 = Math.Round(Convert.ToDecimal(MposReport[n].VAT), 3);
 
                 worksheet.Cells[i, 8].Value = rounded_3.ToString().Trim();
 

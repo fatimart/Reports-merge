@@ -527,14 +527,14 @@ namespace BatelcoReport
                 { 
                     reports[n].Commission = 0.75;
 
-                    rounded_com = Math.Round(Convert.ToDecimal(reports[n].Commission), 3);
+                    rounded_com = Math.Round(Convert.ToDecimal(reports[n].Commission), 3,MidpointRounding.AwayFromZero);
                     worksheet.Cells[i, 7].Value = (rounded_com).ToString().Trim();
                     reports[n].Commission = Convert.ToDouble(rounded_com);
                 }
 
                 else
                 {
-                    rounded_com = Math.Round(Convert.ToDecimal(reports[n].Commission), 3);
+                    rounded_com = Math.Round(Convert.ToDecimal(reports[n].Commission), 3, MidpointRounding.AwayFromZero);
                     worksheet.Cells[i, 7].Value = (rounded_com).ToString().Trim();
                     reports[n].Commission = Convert.ToDouble(rounded_com);
 
@@ -543,7 +543,7 @@ namespace BatelcoReport
 
 
                 reports[n].VAT = (0.05 * reports[n].Commission);
-                decimal rounded_3 = Math.Round(Convert.ToDecimal(reports[n].VAT), 3);
+                decimal rounded_3 = Math.Round(Convert.ToDecimal(reports[n].VAT), 3, MidpointRounding.AwayFromZero);
              
                 worksheet.Cells[i, 8].Value = rounded_3.ToString().Trim();
 
@@ -581,14 +581,14 @@ namespace BatelcoReport
                 {
                     MposReport[n].Commission = 0.75;
 
-                    rounded_com = Math.Round(Convert.ToDecimal(MposReport[n].Commission), 3);
+                    rounded_com = Math.Round(Convert.ToDecimal(MposReport[n].Commission), 3, MidpointRounding.AwayFromZero);
                     worksheet.Cells[i, 7].Value = (rounded_com).ToString().Trim();
                     MposReport[n].Commission = Convert.ToDouble(rounded_com);
                 }
 
                 else
                 {
-                    rounded_com = Math.Round(Convert.ToDecimal(MposReport[n].Commission), 3);
+                    rounded_com = Math.Round(Convert.ToDecimal(MposReport[n].Commission), 3, MidpointRounding.AwayFromZero);
                     worksheet.Cells[i, 7].Value = (rounded_com).ToString().Trim();
                     MposReport[n].Commission = Convert.ToDouble(rounded_com);
 
@@ -597,7 +597,7 @@ namespace BatelcoReport
 
 
                 MposReport[n].VAT = (0.05 * MposReport[n].Commission);
-                decimal rounded_3 = Math.Round(Convert.ToDecimal(MposReport[n].VAT), 3);
+                decimal rounded_3 = Math.Round(Convert.ToDecimal(MposReport[n].VAT), 3, MidpointRounding.AwayFromZero);
 
                 worksheet.Cells[i, 8].Value = rounded_3.ToString().Trim();
 
@@ -664,7 +664,7 @@ namespace BatelcoReport
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Title = "Save Excel sheet";
             saveFileDialog1.Filter = "Excel files|*.xlsx|All files|*.*";
-            saveFileDialog1.FileName = "YQ_Sample_Report " + DateTime.Now.ToString("dd-MM-yyyy") + ".xlsx";
+            saveFileDialog1.FileName = "YQ_BILL_" + DateTime.Now.ToString("dd-MMMM-yyyy") + ".xlsx";
 
 
             if (saveFileDialog1.ShowDialog() == true)

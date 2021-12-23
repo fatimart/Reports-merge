@@ -664,7 +664,7 @@ namespace BatelcoReport
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Title = "Save Excel sheet";
             saveFileDialog1.Filter = "Excel files|*.xlsx|All files|*.*";
-            saveFileDialog1.FileName = "YQ_BILL_" + DateTime.Now.ToString("dd-MMMM-yyyy") + ".xlsx";
+            saveFileDialog1.FileName = "YQ_BILL_" + DateTime.Now.ToString("dd-MMM-yyyy") + ".xlsx";
 
 
             if (saveFileDialog1.ShowDialog() == true)

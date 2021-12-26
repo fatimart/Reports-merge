@@ -542,7 +542,7 @@ namespace BatelcoReport
                 }
 
 
-                reports[n].VAT = (0.05 * reports[n].Commission);
+                reports[n].VAT = (0.10 * reports[n].Commission);
                 decimal rounded_3 = Math.Round(Convert.ToDecimal(reports[n].VAT), 3, MidpointRounding.AwayFromZero);
              
                 worksheet.Cells[i, 8].Value = rounded_3.ToString().Trim();
@@ -596,7 +596,7 @@ namespace BatelcoReport
                 }
 
 
-                MposReport[n].VAT = (0.05 * MposReport[n].Commission);
+                MposReport[n].VAT = (0.10 * MposReport[n].Commission);
                 decimal rounded_3 = Math.Round(Convert.ToDecimal(MposReport[n].VAT), 3, MidpointRounding.AwayFromZero);
 
                 worksheet.Cells[i, 8].Value = rounded_3.ToString().Trim();

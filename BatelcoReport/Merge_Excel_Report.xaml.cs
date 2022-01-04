@@ -200,7 +200,7 @@ namespace BatelcoReport
                             {
                                 ACCOUNT_NUMBER = reader["Bill Phone Number "].ToString(),
                                 CUSTOMER_NAME = default,
-                                TRANSACTION_NUMBER = reader["Reference Number Provider "].ToString(),
+                                TRANSACTION_NUMBER = reader["Transaction Id "].ToString(),
 
                                 PAYMENTDATE = Convert.ToDateTime(PaymentDate),
                                 Date_of_payment_execution = default,
@@ -213,7 +213,7 @@ namespace BatelcoReport
 
                                 Service_Name = "TAM",
 
-                                REFERENCE_NO = reader["Transaction Id "].ToString(),
+                                REFERENCE_NO = reader["Reference Number Provider "].ToString(),
 
                                 PAYMENTLOCATION = "YQB",
 
@@ -231,7 +231,7 @@ namespace BatelcoReport
 
             catch (Exception ex)
             {
-                MessageBox.Show("ERROR in file 2: The file you have selected is not valid. Please check the file path 2 and Select a valid TAM Bills file");
+                MessageBox.Show("ERROR in file 2: The file you have selected is not valid. Please check the file path 2 and Select a valid TAM Bills file (Exeption:" + ex + ")");
                 connection.Close();
                 return false;
             }
@@ -298,7 +298,7 @@ namespace BatelcoReport
 
             catch (Exception ex)
             {
-                MessageBox.Show("ERROR in file 1: Please Select a valid Kiosk file");
+                MessageBox.Show("ERROR in file 1: Please Select a valid Kiosk file (Exeption:"+ex+")");
                 connection.Close();
                 return false;
 
@@ -311,7 +311,7 @@ namespace BatelcoReport
             string commandText = "SELECT * FROM [Sheet3$]";
             string oledbConnectString = "Provider=Microsoft.ACE.OLEDB.12.0;" +
             @"Data Source=" + CombineFile + ";" +
-            "Extended Properties=\"Excel 12.0;HDR=YES\";";
+            "Extended Properties=\"Excel 12.0;HDR=YES;IMEX=1\";";
             OleDbConnection connection = new OleDbConnection(oledbConnectString);
             OleDbCommand command = new OleDbCommand(commandText, connection);
             OleDbDataReader reader;
@@ -374,7 +374,6 @@ namespace BatelcoReport
                             ACCOUNT_NUMBER = reader["Circuit Number"].ToString(),
                             CUSTOMER_NAME = default,
                             TRANSACTION_NUMBER = reader["Batelco Transaction ID"].ToString(),
-
                            PAYMENTDATE = Convert.ToDateTime(outputTime),
                            //PAYMENTDATE = dt,
 
@@ -407,7 +406,7 @@ namespace BatelcoReport
 
             catch (Exception ex)
             {
-                MessageBox.Show("ERROR in file 3: Please Select a valid mPOS file");
+                MessageBox.Show("ERROR in file 3: Please Select a valid mPOS file (Exeption:" + ex + ")");
                 connection.Close();
                 return false;
 

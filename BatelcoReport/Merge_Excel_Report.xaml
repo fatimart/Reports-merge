@@ -19,7 +19,7 @@
         <Button x:Name="btnexport" 
                 Content="Export" 
                 HorizontalAlignment="Left" 
-                Margin="140,164,0,0" 
+                Margin="140,201,0,0" 
                 VerticalAlignment="Top" 
                 Width="420" Height="26" 
                 Click="btnExport_Click"/>
@@ -41,6 +41,14 @@
         <TextBox x:Name="mPOSfileTxt" HorizontalAlignment="Left" Height="23" Margin="145,105,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="415"/>
         <Button x:Name="billsBtnBrowse" Content="Browse" HorizontalAlignment="Left" Margin="580,67,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="billsBtnBrowse_Click"/>
         <Button x:Name="mPOsBtn" Content="Browse" HorizontalAlignment="Left" Margin="580,105,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="mPOsBtn_Click"/>
+        <Label Content="Flooss File Path:" 
+            HorizontalAlignment="Left" 
+            Margin="24,146,0,0" 
+            VerticalAlignment="Top" Width="96"/>
+        <TextBox x:Name="FlossfileTxt" HorizontalAlignment="Left" Height="23" Margin="145,149,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="415"/>
+        <Button x:Name="FlossBtn" Content="Browse" HorizontalAlignment="Left" Margin="580,149,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="FlossBtn_Click" />
+       <Image x:Name="loading" Source="/loading.jpg" Visibility="Hidden" />
+
 
     </Grid>
 </Window>

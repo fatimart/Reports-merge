@@ -12,6 +12,8 @@ using Color = System.Drawing.Color;
 using ex = Microsoft.Office.Interop.Excel;
 using System.Drawing;
 using System.Globalization;
+using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace BatelcoReport
 {
@@ -32,6 +34,8 @@ namespace BatelcoReport
         public Merge_Excel_Report ()
         {
             InitializeComponent();
+           
+
 
         }
 
@@ -51,6 +55,10 @@ namespace BatelcoReport
             OpenmPOSFile();
         }
 
+        private void FlossBtn_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFloossFile();
+        }
         private void btnExport_Click ( object sender, RoutedEventArgs e )
         {
             if (CombineWorkSheet())
@@ -58,12 +66,9 @@ namespace BatelcoReport
                 ReadAll();
             }
 
-            
-
-
         }
 
-
+      
 
         public void OpenBillFile ()
         {
@@ -73,8 +78,6 @@ namespace BatelcoReport
 
             if (fdlg.ShowDialog() == true)
             {
-
-
 
                 billsFiletxt.Text = fdlg.FileName;
 
@@ -117,7 +120,19 @@ namespace BatelcoReport
             }
         }
 
+        public void OpenFloossFile()
+        {
+            OpenFileDialog fdlg = new OpenFileDialog();
+            fdlg.Filter = "(.xlsx)|*.xlsx;*.CSV;*.csv";
+            fdlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
+            if (fdlg.ShowDialog() == true)
+            {
+                FlossfileTxt.Text = fdlg.FileName;
+            }
+        }
+
+      
 
 
 
@@ -125,14 +140,15 @@ namespace BatelcoReport
         {
             
 
-            string bills, kiosk, mPos;
+            string bills, kiosk, mPos,Flooss;
 
+            Flooss = FlossfileTxt.Text;
             bills = billsFiletxt.Text;
             kiosk = kioskFiletxt.Text;
             mPos = mPOSfileTxt.Text;
 
 
-            if (bills != "" && kiosk != "" && mPos != "")
+            if (bills != "" && kiosk != "" && mPos != "" && Flooss !="")
                {
 
                     // Create destination Workbook.
@@ -140,9 +156,9 @@ namespace BatelcoReport
                     // First worksheet is added by default to the Workbook. Add the second worksheet.
                     destWorkbook.Worksheets.Add();
                     destWorkbook.Worksheets.Add();
-                   
-                   
-                    Aspose.Cells.Workbook SourceBook1 = new Aspose.Cells.Workbook(bills);
+                    destWorkbook.Worksheets.Add();
+
+                Aspose.Cells.Workbook SourceBook1 = new Aspose.Cells.Workbook(bills);
                     destWorkbook.Worksheets[0].Copy(SourceBook1.Worksheets[0]);
                     destWorkbook.Worksheets[0].Name = "Sheet1";
 
@@ -159,8 +175,13 @@ namespace BatelcoReport
                     destWorkbook.Worksheets[2].Copy(SourceBook3.Worksheets[0]);
                     destWorkbook.Worksheets[2].Name = "Sheet3";
 
-                    // Save the destination file.
-                    destWorkbook.Save("CombinedFile1.xlsx");
+                // open flooss file 
+                Aspose.Cells.Workbook SourceBook4 = new Aspose.Cells.Workbook(Flooss);
+                destWorkbook.Worksheets[3].Copy(SourceBook4.Worksheets[0]);
+                destWorkbook.Worksheets[3].Name = "Sheet4";
+
+                // Save the destination file.
+                destWorkbook.Save("CombinedFile1.xlsx");
                     //System.Diagnostics.Process.Start("CombinedFile1.xlsx");
 
                     return true;
@@ -168,7 +189,7 @@ namespace BatelcoReport
 
                 else
                 {
-                   MessageBox.Show("Please select 3 files");
+                   MessageBox.Show("Please select 4 files");
                     return false;
                 }
 
@@ -412,11 +433,104 @@ namespace BatelcoReport
 
             }
         }
-       
+        public bool read4()
+        {//flooss
+
+            string CombineFile = "CombinedFile1.xlsx";
+            string commandText = "SELECT * FROM [Sheet4$]";
+            string oledbConnectString = "Provider=Microsoft.ACE.OLEDB.12.0;" +
+            @"Data Source=" + CombineFile + ";" +
+            "Extended Properties=\"Excel 12.0;HDR=YES;IMEX=1\";";
+            OleDbConnection connection = new OleDbConnection(oledbConnectString);
+            OleDbCommand command = new OleDbCommand(commandText, connection);
+            OleDbDataReader reader;
+            try
+            {
+                connection.Open();
+                reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+
+                    if (reader["Transaction Status "].ToString().Trim() == "SUCCESS" && reader["Service Name "].ToString().Trim().ToLower()== "bill payment batelco")
+                    {
+
+
+
+                        string transactionId = reader["Transaction Id "].ToString().Trim();
+                        string refNO = reader["Reference Number Provider "].ToString().Trim();
+
+                        string outputTime = reader["Transaction Date "].ToString().Trim();
+                        string dateChange = reader["Transaction Date "].ToString().Trim();
+                        string timeFormat = dateChange.Substring(dateChange.Length - 2);
+                        if (timeFormat.Equals("AM") || timeFormat.Equals("am")
+                            || timeFormat.Equals("PM") || timeFormat.Equals("pm"))
+                        {
+                            switch (timeFormat)
+                            {
+                                case ("AM"):
+                                    outputTime = dateChange.Replace("AM", "");
+                                    break;
+                                case ("am"):
+                                    outputTime = dateChange.Replace("am", "");
+                                    break;
+                                case ("PM"):
+                                    outputTime = dateChange.Replace("PM", "");
+                                    break;
+                                case ("pm"):
+                                    outputTime = dateChange.Replace("pm", "");
+                                    break;
+                            }
+                        }
+            
+
+                        MposReport.Add(new MposReport
+                        {
+                            ACCOUNT_NUMBER = reader["Customer Phone Number "].ToString(),
+                            CUSTOMER_NAME = default,
+                            TRANSACTION_NUMBER = transactionId,
+                            PAYMENTDATE = Convert.ToDateTime(outputTime),
+
+                            Date_of_payment_execution = default,
+                            AMOUNT = Convert.ToDouble(reader["Transaction Amount "]),
+
+                            Commission = default,
+                            VAT = default,
+                            Net_Amount = default,
+                            AUTHRIZATION_NO = default,
+
+                            Service_Name = "Flooss",
+
+
+                            REFERENCE_NO = refNO,
+
+                            PAYMENTLOCATION = "YQB",
+
+                            Transaction_Status = reader["Transaction Status "].ToString().Trim(),
+                        });
+                    }
+
+                }
+
+
+                connection.Close();
+                return true;
+
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show("ERROR in file 4: Please Select a valid Flooss file (Exeption:" + ex + ")");
+                connection.Close();
+                return false;
+
+            }
+        }
         public bool ReadAll ()
         {
-            if ( read1() && read2() &&read3())
+            if ( read1() && read2() &&read3() &&read4())
             {
+               
                 Excel();
                 return true;
             }
@@ -431,7 +545,8 @@ namespace BatelcoReport
 
         public void Excel ()
         {
-
+           
+           
             Microsoft.Office.Interop.Excel.Application excelApp;
             // load excel, and create a new workbook
             excelApp = new Microsoft.Office.Interop.Excel.Application();
@@ -660,6 +775,9 @@ namespace BatelcoReport
             //worksheet.get_Range("A" + (j - 1) + "", "N" + C1 + "").Borders.LineStyle = ex.XlLineStyle.xlContinuous;
             //worksheet.get_Range("A" + (j - 1) + "", "N" + C1 + "").Borders.Weight = ex.XlBorderWeight.xlThin;
 
+            
+         
+
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Title = "Save Excel sheet";
             saveFileDialog1.Filter = "Excel files|*.xlsx|All files|*.*";
@@ -704,7 +822,7 @@ namespace BatelcoReport
             public string CUSTOMER_NAME { get; set; }
 
         }
+   
 
-       
     }
 }

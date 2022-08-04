@@ -17,7 +17,7 @@ namespace BatelcoReport
         public double Commission { get; set; }
         public double VAT { get; set; }
         public double Net_Amount { get; set; }
-        public int AUTHRIZATION_NO { get; set; }
+        public string AUTHRIZATION_NO { get; set; }
 
         public string Service_Name{ get; set; }
 

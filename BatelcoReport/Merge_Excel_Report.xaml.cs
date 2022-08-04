@@ -296,7 +296,7 @@ namespace BatelcoReport
                                 Commission = Convert.ToDouble(reader["Commission"]),
                                 VAT = default,
                                 Net_Amount = Convert.ToDouble(reader["Net Amount"]),
-                                AUTHRIZATION_NO = Convert.ToInt32(reader["Terminal ID"]),
+                                AUTHRIZATION_NO = reader["Terminal ID"].ToString(),
 
                                 Service_Name = reader["Channel Name"].ToString().Trim(),
 
@@ -356,7 +356,7 @@ namespace BatelcoReport
                         // string dateChange = reader["Date of Payment Recieved"].ToString();
 
 
-                        string transactionId = reader["YQ Transactio ID"].ToString();
+                        
                         string refNO= reader["YQ Transactio ID"].ToString();
                    
                         string outputTime = reader["Date of Payment Recieved"].ToString().Trim();
@@ -452,16 +452,16 @@ namespace BatelcoReport
                 while (reader.Read())
                 {
 
-                    if (reader["Transaction Status "].ToString().Trim() == "SUCCESS" && reader["Service Name "].ToString().Trim().ToLower()== "bill payment batelco")
+                    if (reader["Operation Status"].ToString().Trim() == "SUCCESS" && reader["Service Name"].ToString().Trim().ToLower()== "batelco" && reader["Operation Type"].ToString().Trim().ToLower() == "bill payments")
                     {
 
 
+                       
+                        string transactionId = reader["Reference Number (Provider)"].ToString().Trim();
+                        string refNO = reader["Transaction Id"].ToString().Trim();
 
-                        string transactionId = reader["Transaction Id "].ToString().Trim();
-                        string refNO = reader["Reference Number Provider "].ToString().Trim();
-
-                        string outputTime = reader["Transaction Date "].ToString().Trim();
-                        string dateChange = reader["Transaction Date "].ToString().Trim();
+                        string outputTime = reader["Transaction Date"].ToString().Trim();
+                        string dateChange = reader["Transaction Date"].ToString().Trim();
                         string timeFormat = dateChange.Substring(dateChange.Length - 2);
                         if (timeFormat.Equals("AM") || timeFormat.Equals("am")
                             || timeFormat.Equals("PM") || timeFormat.Equals("pm"))
@@ -484,15 +484,15 @@ namespace BatelcoReport
                         }
             
 
-                        MposReport.Add(new MposReport
+                        reports.Add(new Report
                         {
-                            ACCOUNT_NUMBER = reader["Customer Phone Number "].ToString(),
+                            ACCOUNT_NUMBER = reader["Bill Account Number"].ToString(),
                             CUSTOMER_NAME = default,
                             TRANSACTION_NUMBER = transactionId,
                             PAYMENTDATE = Convert.ToDateTime(outputTime),
 
                             Date_of_payment_execution = default,
-                            AMOUNT = Convert.ToDouble(reader["Transaction Amount "]),
+                            AMOUNT = Convert.ToDouble(reader["Transaction Amount"]),
 
                             Commission = default,
                             VAT = default,
@@ -506,7 +506,7 @@ namespace BatelcoReport
 
                             PAYMENTLOCATION = "YQB",
 
-                            Transaction_Status = reader["Transaction Status "].ToString().Trim(),
+                            Transaction_Status = reader["Operation Status"].ToString().Trim(),
                         });
                     }
 
@@ -629,6 +629,10 @@ namespace BatelcoReport
                 worksheet.Cells[i, 2].Value = "";
                 worksheet.Cells[i, 3].Value = reports[n].TRANSACTION_NUMBER.ToString().Trim();
 
+                // worksheet.Cells[i, 4].Value = reports[n].PAYMENTDATE.ToString("MM/dd/yyyy hh:mm:ss").Trim();
+
+               // worksheet.Cells[i, 4].NumberFormat = CultureInfo.CurrentCulture.DateTimeFormat.LongDatePattern;
+                // worksheet.Cells[i, 4].NumberFormat = "dd/MM/yyyy hh:mm:ss";
                 worksheet.Cells[i, 4].Value = reports[n].PAYMENTDATE.ToString("dd/MM/yyyy hh:mm:ss").Trim();
 
                 worksheet.Cells[i, 5].Value = "";
@@ -682,7 +686,8 @@ namespace BatelcoReport
                 worksheet.Cells[i, 1].Value = "973" + MposReport[n].ACCOUNT_NUMBER.Trim();
                 worksheet.Cells[i, 2].Value = "";
                 worksheet.Cells[i, 3].Value = MposReport[n].TRANSACTION_NUMBER.ToString().Trim();
-                worksheet.Cells[i, 4].NumberFormat = "dd/MM/yyyy hh:mm:ss";
+                //     worksheet.Cells[i, 4].NumberFormat = "dd/MM/yyyy hh:mm:ss";
+                //worksheet.Cells[i, 4].NumberFormat = CultureInfo.CurrentCulture.DateTimeFormat.LongDatePattern;
                 worksheet.Cells[i, 4].Value = MposReport[n].PAYMENTDATE.ToString("dd/MM/yyyy hh:mm:ss").Trim();
 
                 worksheet.Cells[i, 5].Value = "";
